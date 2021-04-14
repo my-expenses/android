@@ -70,8 +70,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="48dp"
-                android:enabled="@{!viewModel.loginLoading}"
-
+                android:enabled="@{!viewModel.loading}"
+                android:onClick="@{() -> viewModel.login()}"
                 android:text="@string/sign_in_txt"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
