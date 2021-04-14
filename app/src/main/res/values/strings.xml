@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Expenses</string>
+
+    <string name="not_connected">Still not connected? SignUp Now</string>
+    <string name="sign_in_txt">SIGN IN</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="signup_text">Sign-up</string>
+
 </resources>
