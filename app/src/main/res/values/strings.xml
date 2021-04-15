@@ -7,4 +7,7 @@
     <string name="password_hint">Password</string>
     <string name="signup_text">Sign-up</string>
 
+    <string name="positive_amount">+%d</string>
+    <string name="negative_amount">-%d</string>
+    <string name="delete_button">Delete</string>
 </resources>

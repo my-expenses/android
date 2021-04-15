@@ -41,7 +41,9 @@ class TransactionsViewModel : ViewModel() {
                 val response = getTransactionsDeferred.await()
                 _status.value = TRANSACTIONS_API_STATUS.DONE
                 _transactions.value = response.transactions
-                Log.d("TRANSACTIONS", response.transactions[0].title)
+                Log.d("TRANSACTIONS", response.transactions[0].amount.toString())
+                Log.d("TRANSACTIONS", response.transactions[0].type.toString())
+                Log.d("TRANSACTIONS", response.transactions[0].date.toString())
             } catch (t: Throwable) {
                 t.printStackTrace()
                 _status.value = TRANSACTIONS_API_STATUS.ERROR
