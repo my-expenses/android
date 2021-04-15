@@ -2,7 +2,9 @@ package com.motawfik.expenses.network
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.motawfik.expenses.BuildConfig
+import com.motawfik.expenses.models.Transaction
 import com.motawfik.expenses.repos.TokenRepository
+import com.motawfik.expenses.transactions.TransactionsResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Deferred
@@ -12,6 +14,7 @@ import org.koin.java.KoinJavaComponent.inject
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
+import java.util.*
 
 // get token repository by Koin
 private val tokenRepository by inject(TokenRepository::class.java)
@@ -46,5 +49,23 @@ interface UsersApiService {
 object UsersApi {
     val retrofitService : UsersApiService by lazy {
         retrofit.create(UsersApiService::class.java)
+    }
+}
+
+
+interface TransactionsApiService {
+    @GET("/auth/transactions")
+    fun getTransactions(
+        @Query("page") page: Int,
+        @Query("itemsPerPage") itemsPerPage: Int,
+        @Query("sortBy[]") sortBy: List<String>,
+        @Query("sortDesc[]") sortDesc: List<String>,
+        @Query("month") month: String,
+    ) : Deferred<TransactionsResponse>
+}
+
+object TransactionsApi {
+    val retrofitService : TransactionsApiService by lazy {
+        retrofit.create(TransactionsApiService::class.java)
     }
 }

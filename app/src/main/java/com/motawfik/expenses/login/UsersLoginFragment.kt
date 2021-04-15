@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.motawfik.expenses.databinding.UsersLoginFragmentBinding
 import com.motawfik.expenses.repos.TokenRepository
@@ -26,6 +27,10 @@ class UsersLoginFragment : Fragment() {
         // observing login status for changes
         loginViewModel.loginStatus.observe(viewLifecycleOwner, {
             when (it) {
+                LOGIN_STATUS.SUCCESS -> {
+                    findNavController().navigate(UsersLoginFragmentDirections.actionUsersLoginFragmentToTransactionsFragment())
+                    loginViewModel.resetLoginStatus()
+                }
                 LOGIN_STATUS.INVALID_CREDENTIALS -> { // if invalid credentials
                     showSnackbar(loginBinding.root, "Invalid Credentials")
                     loginViewModel.resetLoginStatus()

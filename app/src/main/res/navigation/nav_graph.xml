@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
-    app:startDestination="@id/usersLoginFragment">
+    app:startDestination="@id/transactionsFragment">
     <fragment
         android:id="@+id/usersLoginFragment"
         android:name="com.motawfik.expenses.login.UsersLoginFragment"
-        android:label="UsersLoginFragment" />
+        android:label="UsersLoginFragment" >
+        <action
+            android:id="@+id/action_usersLoginFragment_to_transactionsFragment"
+            app:destination="@id/transactionsFragment"
+            app:popUpTo="@id/usersLoginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/transactionsFragment"
+        android:name="com.motawfik.expenses.transactions.TransactionsFragment"
+        android:label="TransactionsFragment" />
 </navigation>
