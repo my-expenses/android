@@ -8,11 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
 import com.motawfik.expenses.databinding.UsersLoginFragmentBinding
-import com.motawfik.expenses.repos.PrefRepository
+import com.motawfik.expenses.repos.TokenRepository
+import org.koin.java.KoinJavaComponent
 
 
 class UsersLoginFragment : Fragment() {
     private val loginViewModel = UsersLoginViewModel()
+    private val tokenRepository by KoinJavaComponent.inject(TokenRepository::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -20,7 +22,6 @@ class UsersLoginFragment : Fragment() {
     ): View {
         val loginBinding = UsersLoginFragmentBinding.inflate(inflater)
         loginBinding.viewModel = loginViewModel
-        val sharedPref = PrefRepository(requireActivity())
 
         // observing login status for changes
         loginViewModel.loginStatus.observe(viewLifecycleOwner, {
@@ -43,7 +44,8 @@ class UsersLoginFragment : Fragment() {
 
         loginViewModel.token.observe(viewLifecycleOwner, {
             if (it.isNotEmpty()) {
-                sharedPref.setTokenValue(it)
+                // saving token to sharedPreferences
+                tokenRepository.setTokenValue(it)
                 loginViewModel.resetToken()
             }
         })

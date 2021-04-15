@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 
 private const val TOKEN_VALUE = "TOKEN_VALUE"
 
-class PrefRepository(context: Context) {
+class TokenRepository(context: Context) {
     private val pref: SharedPreferences =
         context.getSharedPreferences("JWT_TOKEN_FILE", Context.MODE_PRIVATE)
 

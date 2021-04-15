@@ -1,11 +1,9 @@
 package com.motawfik.expenses.login
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.motawfik.expenses.network.UsersApi
-import com.motawfik.expenses.repos.PrefRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
