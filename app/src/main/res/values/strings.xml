@@ -10,4 +10,5 @@
     <string name="positive_amount">+%d</string>
     <string name="negative_amount">-%d</string>
     <string name="delete_button">Delete</string>
+    <string name="uncategorized_chip">Uncategorized</string>
 </resources>

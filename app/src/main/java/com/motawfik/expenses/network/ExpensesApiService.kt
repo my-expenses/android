@@ -2,6 +2,7 @@ package com.motawfik.expenses.network
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.motawfik.expenses.BuildConfig
+import com.motawfik.expenses.categories.CategoriesResponse
 import com.motawfik.expenses.repos.TokenRepository
 import com.motawfik.expenses.transactions.TransactionsResponse
 import com.squareup.moshi.Moshi
@@ -67,5 +68,16 @@ interface TransactionsApiService {
 object TransactionsApi {
     val retrofitService : TransactionsApiService by lazy {
         retrofit.create(TransactionsApiService::class.java)
+    }
+}
+
+interface CategoriesApiService {
+    @GET("/auth/categories")
+    fun getCategories() : Deferred<CategoriesResponse>
+}
+
+object CategoriesApi {
+    val retrofitService : CategoriesApiService by lazy {
+        retrofit.create(CategoriesApiService::class.java)
     }
 }

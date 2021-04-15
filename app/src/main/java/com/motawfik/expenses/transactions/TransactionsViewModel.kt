@@ -4,7 +4,10 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.motawfik.expenses.categories.CATEGORIES_API_STATUS
+import com.motawfik.expenses.models.Category
 import com.motawfik.expenses.models.Transaction
+import com.motawfik.expenses.network.CategoriesApi
 import com.motawfik.expenses.network.TransactionsApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,9 +27,20 @@ class TransactionsViewModel : ViewModel() {
     val transactions: LiveData<List<Transaction>>
         get() = _transactions
 
+    private val _categories = MutableLiveData<List<Category>>()
+    val categories: LiveData<List<Category>>
+        get() = _categories
+
     private val _status = MutableLiveData(TRANSACTIONS_API_STATUS.INITIAL)
     val status: LiveData<TRANSACTIONS_API_STATUS>
         get() = _status
+
+    private val _categoriesStatus = MutableLiveData(CATEGORIES_API_STATUS.INITIAL)
+    val categoriesStatus: LiveData<CATEGORIES_API_STATUS>
+        get() = _categoriesStatus
+    fun resetCategoriesStatus() {
+        _categoriesStatus.value = CATEGORIES_API_STATUS.INITIAL
+    }
 
 
     fun getTransactions() {
@@ -41,13 +55,26 @@ class TransactionsViewModel : ViewModel() {
                 val response = getTransactionsDeferred.await()
                 _status.value = TRANSACTIONS_API_STATUS.DONE
                 _transactions.value = response.transactions
-                Log.d("TRANSACTIONS", response.transactions[0].amount.toString())
-                Log.d("TRANSACTIONS", response.transactions[0].type.toString())
-                Log.d("TRANSACTIONS", response.transactions[0].date.toString())
             } catch (t: Throwable) {
                 t.printStackTrace()
                 _status.value = TRANSACTIONS_API_STATUS.ERROR
                 _transactions.value = ArrayList()
+            }
+        }
+    }
+
+    fun getCategories() {
+        coroutineScope.launch {
+            val getCategoriesDeferred = CategoriesApi.retrofitService.getCategories()
+            try {
+                _categoriesStatus.value = CATEGORIES_API_STATUS.INITIAL
+                val response = getCategoriesDeferred.await()
+                _categories.value = response.categories
+                _categoriesStatus.value = CATEGORIES_API_STATUS.DONE
+            } catch (t: Throwable) {
+                t.printStackTrace()
+                _categoriesStatus.value = CATEGORIES_API_STATUS.ERROR
+                _categories.value = ArrayList()
             }
         }
     }

@@ -12,6 +12,10 @@
         <variable
             name="clickListener"
             type="com.motawfik.expenses.transactions.TransactionListener" />
+
+        <variable
+            name="category"
+            type="com.motawfik.expenses.models.Category" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -78,8 +82,7 @@
                         android:id="@+id/chip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="Category A"
-                        android:text="Category A"/>
+                        app:categoryName="@{category}" />
 
                 </LinearLayout>
 
