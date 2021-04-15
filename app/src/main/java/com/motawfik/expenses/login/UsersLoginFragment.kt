@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
 import com.motawfik.expenses.databinding.UsersLoginFragmentBinding
+import com.motawfik.expenses.repos.PrefRepository
 
 
 class UsersLoginFragment : Fragment() {
@@ -19,6 +20,7 @@ class UsersLoginFragment : Fragment() {
     ): View {
         val loginBinding = UsersLoginFragmentBinding.inflate(inflater)
         loginBinding.viewModel = loginViewModel
+        val sharedPref = PrefRepository(requireActivity())
 
         // observing login status for changes
         loginViewModel.loginStatus.observe(viewLifecycleOwner, {
@@ -36,6 +38,13 @@ class UsersLoginFragment : Fragment() {
                     loginViewModel.resetLoginStatus()
                 }
                 else -> {}
+            }
+        })
+
+        loginViewModel.token.observe(viewLifecycleOwner, {
+            if (it.isNotEmpty()) {
+                sharedPref.setTokenValue(it)
+                loginViewModel.resetToken()
             }
         })
 

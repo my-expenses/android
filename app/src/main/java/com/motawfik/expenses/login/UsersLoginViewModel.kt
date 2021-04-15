@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.motawfik.expenses.network.UsersApi
+import com.motawfik.expenses.repos.PrefRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,8 +28,16 @@ class UsersLoginViewModel : ViewModel() {
     val loading: Boolean // to disable sign-in button when loading
         get() = _loginStatus.value == LOGIN_STATUS.LOADING
 
+    private val _token = MutableLiveData("")
+    val token: LiveData<String>
+        get() = _token
+
     fun resetLoginStatus() {
         _loginStatus.value = LOGIN_STATUS.INITIAL
+    }
+
+    fun resetToken() {
+        _token.value = ""
     }
 
     fun login() {
@@ -38,10 +47,9 @@ class UsersLoginViewModel : ViewModel() {
                 _loginStatus.value = LOGIN_STATUS.LOADING
                 val response = loginDeferred.await()
                 _loginStatus.value = LOGIN_STATUS.SUCCESS
-                Log.d("LOGIN_API", response["message"] ?: error("No message found"))
-                Log.d("LOGIN_API", response["token"] ?: error("No token found"))
+                _token.value = response["token"]
             } catch (t: Throwable) {
-                when(t) {
+                when (t) {
                     is HttpException -> {
                         if (t.code() == 401)
                             _loginStatus.value = LOGIN_STATUS.INVALID_CREDENTIALS
