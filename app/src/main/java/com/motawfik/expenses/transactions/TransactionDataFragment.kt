@@ -29,6 +29,7 @@ class TransactionDataFragment : Fragment() {
         viewModel.initializeTransaction(transaction)
 
         transactionDataBinding.viewModel = viewModel
+        transactionDataBinding.categories = categories.toList()
         viewModel.transactionData.observe(viewLifecycleOwner, {
             it?.let {
                 transactionDataBinding.transaction = it
@@ -40,9 +41,9 @@ class TransactionDataFragment : Fragment() {
         categories.forEach {
             val chip = layoutInflater.inflate(R.layout.single_chip_layout,
                 chipGroup, false) as Chip
+            chip.id = it.ID
             chip.text = it.title
             chip.isCheckable = true
-            chip.isChecked = transaction?.categoryID == it.ID
             chipGroup.addView(chip)
         }
 

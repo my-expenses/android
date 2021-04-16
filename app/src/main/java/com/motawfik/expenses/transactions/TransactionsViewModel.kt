@@ -1,5 +1,6 @@
 package com.motawfik.expenses.transactions
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -94,5 +95,13 @@ class TransactionsViewModel : ViewModel() {
                 _categories.value = ArrayList()
             }
         }
+    }
+
+    fun saveTransaction() {
+        transactionData.value?.title?.let { Log.d("TRANSACTION_FIELD_DATA", it) }
+        Log.d("TRANSACTION_FIELD_DATA", transactionData.value?.amount.toString())
+        Log.d("TRANSACTION_FIELD_DATA", transactionData.value?.date.toString())
+        Log.d("TRANSACTION_FIELD_DATA", transactionData.value?.type.toString())
+        Log.d("TRANSACTION_FIELD_DATA", transactionData.value?.categoryID.toString())
     }
 }
