@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.chip.Chip
 import com.motawfik.expenses.databinding.FragmentTransactionDataBinding
 
 class TransactionDataFragment : Fragment() {
@@ -20,12 +21,24 @@ class TransactionDataFragment : Fragment() {
         val transactionDataBinding = FragmentTransactionDataBinding.inflate(inflater)
 
         val transaction = args.transaction
-        val transactionDataViewModelFactory = TransactionDataViewModelFactory(transaction)
+        val categories = args.categories
+        val transactionDataViewModelFactory = TransactionDataViewModelFactory(
+            transaction, categories.toList())
 
         viewModel = ViewModelProvider(this, transactionDataViewModelFactory)
             .get(TransactionDataViewModel::class.java)
 
         transactionDataBinding.viewModel = viewModel
+
+        val chipGroup = transactionDataBinding.chipGroup
+        categories.forEach {
+            val chip = Chip(chipGroup.context)
+            chip.text = it.title
+            chip.isCheckable = true
+            chip.isChecked = transaction?.categoryID == it.ID
+            chipGroup.addView(chip)
+        }
+
 
         return transactionDataBinding.root
     }

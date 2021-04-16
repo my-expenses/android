@@ -34,6 +34,9 @@
             app:argType="com.motawfik.expenses.models.Transaction"
             app:nullable="true"
             android:defaultValue="@null" />
+        <argument
+            android:name="categories"
+            app:argType="com.motawfik.expenses.models.Category[]" />
     </fragment>
 
 </navigation>

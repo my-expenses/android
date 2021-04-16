@@ -23,7 +23,8 @@ class TransactionsFragment : Fragment() {
 
         val transactionsAdapter = TransactionsAdapter(TransactionListener {
             findNavController().navigate(TransactionsFragmentDirections
-                .actionTransactionsFragmentToTransactionDataFragment(it))
+                .actionTransactionsFragmentToTransactionDataFragment(
+                    it, transactionsViewModel.categories.value!!.toTypedArray()))
         }, transactionsViewModel.categories)
         transactionsBinding.transactionsList.adapter = transactionsAdapter
 
@@ -46,7 +47,8 @@ class TransactionsFragment : Fragment() {
         transactionsViewModel.navigateToDataFragment.observe(viewLifecycleOwner, {
             if (it) {
                 findNavController().navigate(TransactionsFragmentDirections
-                    .actionTransactionsFragmentToTransactionDataFragment())
+                    .actionTransactionsFragmentToTransactionDataFragment(
+                        null, transactionsViewModel.categories.value!!.toTypedArray()))
                 transactionsViewModel.resetNavigationToDataFragment()
             }
         })
