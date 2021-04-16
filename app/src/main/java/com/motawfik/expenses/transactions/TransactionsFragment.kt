@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.motawfik.expenses.categories.CATEGORIES_API_STATUS
 import com.motawfik.expenses.databinding.FragmentTransactionsBinding
 
@@ -21,7 +22,8 @@ class TransactionsFragment : Fragment() {
         transactionsBinding.viewModel = transactionsViewModel
 
         val transactionsAdapter = TransactionsAdapter(TransactionListener {
-            Log.d("TRANSACTION_ID", it.toString())
+            findNavController().navigate(TransactionsFragmentDirections
+                .actionTransactionsFragmentToTransactionDataFragment(it))
         }, transactionsViewModel.categories)
         transactionsBinding.transactionsList.adapter = transactionsAdapter
 
@@ -41,6 +43,13 @@ class TransactionsFragment : Fragment() {
 
         transactionsViewModel.getCategories()
 
+        transactionsViewModel.navigateToDataFragment.observe(viewLifecycleOwner, {
+            if (it) {
+                findNavController().navigate(TransactionsFragmentDirections
+                    .actionTransactionsFragmentToTransactionDataFragment())
+                transactionsViewModel.resetNavigationToDataFragment()
+            }
+        })
 
         return transactionsBinding.root
     }

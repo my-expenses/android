@@ -1,6 +1,5 @@
 package com.motawfik.expenses.transactions
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -40,6 +39,16 @@ class TransactionsViewModel : ViewModel() {
         get() = _categoriesStatus
     fun resetCategoriesStatus() {
         _categoriesStatus.value = CATEGORIES_API_STATUS.INITIAL
+    }
+
+    private val _navigateToDataFragment = MutableLiveData(false)
+    val navigateToDataFragment: LiveData<Boolean>
+        get() = _navigateToDataFragment
+    fun startNavigationToDataFragment () {
+        _navigateToDataFragment.value = true
+    }
+    fun resetNavigationToDataFragment() {
+        _navigateToDataFragment.value = false
     }
 
 

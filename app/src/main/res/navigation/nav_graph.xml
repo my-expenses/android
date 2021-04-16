@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
     app:startDestination="@id/transactionsFragment">
     <fragment
         android:id="@+id/usersLoginFragment"
         android:name="com.motawfik.expenses.login.UsersLoginFragment"
-        android:label="UsersLoginFragment" >
+        android:label="UsersLoginFragment"
+        tools:layout="@layout/fragment_users_login">
         <action
             android:id="@+id/action_usersLoginFragment_to_transactionsFragment"
             app:destination="@id/transactionsFragment"
@@ -15,5 +18,22 @@
     <fragment
         android:id="@+id/transactionsFragment"
         android:name="com.motawfik.expenses.transactions.TransactionsFragment"
-        android:label="TransactionsFragment" />
+        android:label="TransactionsFragment"
+        tools:layout="@layout/fragment_transactions">
+
+        <action
+            android:id="@+id/action_transactionsFragment_to_transactionDataFragment"
+            app:destination="@id/transactionDataFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/transactionDataFragment"
+        android:name="com.motawfik.expenses.transactions.TransactionDataFragment"
+        android:label="TransactionDataFragment" >
+        <argument
+            android:name="transaction"
+            app:argType="com.motawfik.expenses.models.Transaction"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+
 </navigation>

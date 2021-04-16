@@ -55,8 +55,8 @@ class PostDiffCallback : DiffUtil.ItemCallback<Transaction>() {
 }
 
 
-class TransactionListener(val clickListener: (transactionID: Int) -> Unit) {
+class TransactionListener(val clickListener: (transaction: Transaction) -> Unit) {
     fun onClick(transaction: Transaction) {
-        clickListener(transaction.ID)
+        clickListener(transaction)
     }
 }
