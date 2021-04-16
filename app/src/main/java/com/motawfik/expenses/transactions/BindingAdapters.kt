@@ -4,6 +4,8 @@ import android.graphics.Color
 import android.widget.TextView
 
 import androidx.databinding.BindingAdapter
+import androidx.databinding.InverseBindingAdapter
+import androidx.databinding.InverseBindingListener
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.motawfik.expenses.R
 import com.motawfik.expenses.models.Category
@@ -35,7 +37,21 @@ fun TextView.bindCategoryName(category: Category?) {
     text = category?.title ?: context.getString(R.string.uncategorized_chip)
 }
 
-@BindingAdapter("typeButton")
+@BindingAdapter("checkedBtnAttrChanged")
+fun MaterialButtonToggleGroup.setToggleGroupChangedListener(listener: InverseBindingListener) {
+    addOnButtonCheckedListener { group, checkedId, isChecked -> listener.onChange() }
+}
+
+@BindingAdapter("checkedBtn")
 fun MaterialButtonToggleGroup.bindTypeButton(type: Boolean) {
     check(if (type) R.id.income_button else R.id.expense_button)
+}
+
+@InverseBindingAdapter(attribute = "checkedBtn")
+fun MaterialButtonToggleGroup.getTypeButton(): Boolean {
+    when(checkedButtonId) {
+        R.id.income_button -> return true
+        R.id.expense_button -> return false
+    }
+    return false
 }

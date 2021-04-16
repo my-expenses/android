@@ -7,7 +7,12 @@
 
         <variable
             name="viewModel"
-            type="com.motawfik.expenses.transactions.TransactionDataViewModel" />
+            type="com.motawfik.expenses.transactions.TransactionsViewModel" />
+
+        <variable
+            name="transaction"
+            type="com.motawfik.expenses.models.Transaction"
+            />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,7 +34,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@={viewModel.transactionData.title}" />
+                android:text="@={transaction.title}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -52,8 +57,30 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:inputType="number"
-                android:text="@={`` + viewModel.transactionData.amount}" />
+                android:text="@={`` + transaction.amount}" />
             <!-- blackslashes are for enabling two way databinding for integers-->
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dateTextField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:hint="@string/date_text_field"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/amountTextField">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dateEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:clickable="true"
+                app:date="@{transaction.date}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -64,12 +91,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            app:selectionRequired="true"
-            app:singleSelection="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:typeButton="@{viewModel.transactionData.type}"
-            app:layout_constraintTop_toBottomOf="@+id/amountTextField">
+            app:layout_constraintTop_toBottomOf="@+id/dateTextField"
+            app:selectionRequired="true"
+            app:singleSelection="true"
+            app:checkedBtn="@={transaction.type}">
 
             <Button
                 android:id="@+id/expense_button"
@@ -101,6 +128,19 @@
             <!-- Chips can be declared here, or added dynamically. -->
 
         </com.google.android.material.chip.ChipGroup>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/purple_200"
+            android:clickable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_baseline_save_24"
+            android:focusable="true" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

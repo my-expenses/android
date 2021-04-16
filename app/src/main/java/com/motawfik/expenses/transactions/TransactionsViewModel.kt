@@ -26,6 +26,14 @@ class TransactionsViewModel : ViewModel() {
     val transactions: LiveData<List<Transaction>>
         get() = _transactions
 
+    private val _transactionData = MutableLiveData<Transaction?>()
+    val transactionData: LiveData<Transaction?>
+        get() = _transactionData
+
+    fun initializeTransaction(transaction: Transaction?) {
+        _transactionData.value = transaction
+    }
+
     private val _categories = MutableLiveData<List<Category>>()
     val categories: LiveData<List<Category>>
         get() = _categories
