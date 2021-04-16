@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.chip.Chip
+import com.motawfik.expenses.R
 import com.motawfik.expenses.databinding.FragmentTransactionDataBinding
 
 class TransactionDataFragment : Fragment() {
@@ -32,7 +33,9 @@ class TransactionDataFragment : Fragment() {
 
         val chipGroup = transactionDataBinding.chipGroup
         categories.forEach {
-            val chip = Chip(chipGroup.context)
+//            val chip = Chip(chipGroup.context)
+            val chip = layoutInflater.inflate(R.layout.single_chip_layout,
+                chipGroup, false) as Chip
             chip.text = it.title
             chip.isCheckable = true
             chip.isChecked = transaction?.categoryID == it.ID
