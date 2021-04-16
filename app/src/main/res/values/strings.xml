@@ -15,4 +15,6 @@
     <string name="amount_text_field">Amount</string>
     <string name="category_auto_complete">category</string>
     <string name="type_dropdown">Type</string>
+    <string name="expense_button">Expense</string>
+    <string name="income_button">Income</string>
 </resources>

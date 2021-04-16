@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.widget.TextView
 
 import androidx.databinding.BindingAdapter
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.motawfik.expenses.R
 import com.motawfik.expenses.models.Category
 import java.text.SimpleDateFormat
@@ -32,4 +33,9 @@ fun TextView.bindCategoryName(category: Category?) {
     // if the category is null, then set the text to be "uncategorized"
     // else set the text to be category.title
     text = category?.title ?: context.getString(R.string.uncategorized_chip)
+}
+
+@BindingAdapter("typeButton")
+fun MaterialButtonToggleGroup.bindTypeButton(type: Boolean) {
+    check(if (type) R.id.income_button else R.id.expense_button)
 }

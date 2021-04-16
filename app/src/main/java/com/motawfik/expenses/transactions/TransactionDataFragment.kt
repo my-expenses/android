@@ -4,12 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
-import com.motawfik.expenses.R
 import com.motawfik.expenses.databinding.FragmentTransactionDataBinding
 
 class TransactionDataFragment : Fragment() {
@@ -29,11 +26,6 @@ class TransactionDataFragment : Fragment() {
             .get(TransactionDataViewModel::class.java)
 
         transactionDataBinding.viewModel = viewModel
-
-        val items = listOf("Expense", "Income", "Third One")
-        val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_list_item, items)
-        (transactionDataBinding.autoComplete as? AutoCompleteTextView)?.setAdapter(adapter)
-
 
         return transactionDataBinding.root
     }
