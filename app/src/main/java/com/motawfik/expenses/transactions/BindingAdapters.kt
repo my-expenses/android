@@ -1,6 +1,7 @@
 package com.motawfik.expenses.transactions
 
 import android.graphics.Color
+import android.util.Log
 import android.widget.TextView
 
 import androidx.databinding.BindingAdapter
@@ -26,10 +27,13 @@ fun TextView.bindAmountText(amount: Int, type: Boolean) {
 }
 
 @BindingAdapter("date")
-fun TextView.bindDate(date: Date) {
+fun TextView.bindDate(date: Date?) {
     val parser = SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy", Locale.US)
     val formatter = SimpleDateFormat("EEE, MMM dd, yyyy hh:mm a", Locale.US)
-    text = formatter.format(parser.parse(date.toString())!!)
+    text = if (date == null)
+        formatter.format(parser.parse(Date().toString()))
+    else
+        formatter.format(parser.parse(date.toString())!!)
 }
 
 @BindingAdapter("categoryName")

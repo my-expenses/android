@@ -12,8 +12,5 @@ data class Transaction(
     var amount: Int,
     var title: String,
     var type: Boolean,
-    var date: Date,
-) : Parcelable {
-    var strType = ""
-        get() = (if (type) "Income" else "Expense")
-}
+    var date: Date = Date(),
+) : Parcelable
