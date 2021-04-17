@@ -31,9 +31,7 @@
         android:label="TransactionDataFragment" >
         <argument
             android:name="transaction"
-            app:argType="com.motawfik.expenses.models.Transaction"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:argType="com.motawfik.expenses.models.Transaction" />
         <argument
             android:name="categories"
             app:argType="com.motawfik.expenses.models.Category[]" />

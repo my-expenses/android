@@ -6,11 +6,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Transaction(
-    val ID: Int,
-    val userID: Int,
-    var categoryID: Int?,
-    var amount: Int,
-    var title: String,
-    var type: Boolean,
+    val ID: Int = 0,
+    val userID: Int = 0,
+    var categoryID: Int? = null,
+    var amount: Int = 0,
+    var title: String = "",
+    var type: Boolean = false,
     var date: Date = Date(),
 ) : Parcelable

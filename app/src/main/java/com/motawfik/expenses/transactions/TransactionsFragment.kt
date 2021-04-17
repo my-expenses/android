@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.motawfik.expenses.categories.CATEGORIES_API_STATUS
 import com.motawfik.expenses.databinding.FragmentTransactionsBinding
+import com.motawfik.expenses.models.Transaction
 
 class TransactionsFragment : Fragment() {
     private val transactionsViewModel = TransactionsViewModel()
@@ -48,7 +49,7 @@ class TransactionsFragment : Fragment() {
             if (it) {
                 findNavController().navigate(TransactionsFragmentDirections
                     .actionTransactionsFragmentToTransactionDataFragment(
-                        null, transactionsViewModel.categories.value!!.toTypedArray()))
+                        Transaction(), transactionsViewModel.categories.value!!.toTypedArray()))
                 transactionsViewModel.resetNavigationToDataFragment()
             }
         })

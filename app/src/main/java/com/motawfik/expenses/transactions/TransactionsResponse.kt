@@ -8,4 +8,9 @@ import kotlinx.parcelize.Parcelize
 data class TransactionsResponse(
     val transactions: List<Transaction>,
     val numberOfRecords: Int,
-) : Parcelable {}
+) : Parcelable
+
+@Parcelize
+data class TransactionResponse(
+    val transaction: Transaction
+) : Parcelable

@@ -1,14 +1,17 @@
 package com.motawfik.expenses.transactions
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.motawfik.expenses.R
@@ -52,13 +55,10 @@ class TransactionDataFragment : Fragment() {
         val selectedTimeCalendar = Calendar.getInstance()
         transactionDataBinding.dateEditText.setOnClickListener {
             val calendar = Calendar.getInstance()
-            if (transaction?.date != null)
-                calendar.time = transaction.date
-            else
-                calendar.time = Date()
+            calendar.time = transaction.date
 
             val datePicker = MaterialDatePicker.Builder.datePicker()
-                    .setSelection(transaction?.date?.time)
+                    .setSelection(transaction.date.time)
                     .setTitleText("Select date")
                     .build()
             val timePicker = MaterialTimePicker.Builder()
@@ -75,12 +75,35 @@ class TransactionDataFragment : Fragment() {
             timePicker.addOnPositiveButtonClickListener {
                 selectedTimeCalendar.set(Calendar.HOUR, timePicker.hour)
                 selectedTimeCalendar.set(Calendar.MINUTE, timePicker.minute)
-                transactionDataBinding.transaction?.date = selectedTimeCalendar.time
-                viewModel.initializeTransaction(transactionDataBinding.transaction)
+                transaction.date = selectedTimeCalendar.time
+                viewModel.initializeTransaction(transaction)
             }
             datePicker.show(childFragmentManager, "date_tag")
         }
 
+
+        viewModel.saveStatus.observe(viewLifecycleOwner, {
+            it?.let {
+                if (it == TRANSACTIONS_API_STATUS.DONE) {
+                    Log.d("STATUS_DONE", "SAVED SUCCESSFULLY")
+                    showSnackbar(transactionDataBinding.root, Color.GREEN,"Transaction Saved Successfully")
+                    findNavController().popBackStack()
+                    viewModel.resetSaveStatus()
+                } else if (it == TRANSACTIONS_API_STATUS.ERROR) {
+                    showSnackbar(transactionDataBinding.root, Color.RED, viewModel.saveErrorMessage.value!!)
+                    viewModel.resetSaveStatus()
+                }
+            }
+        })
+
         return transactionDataBinding.root
+    }
+
+    private fun showSnackbar(rootView: View, color: Int, message: String) {
+        Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT)
+            .setBackgroundTint(color)
+            .setActionTextColor(Color.BLACK)
+            .setAction("Close") {}
+            .show()
     }
 }

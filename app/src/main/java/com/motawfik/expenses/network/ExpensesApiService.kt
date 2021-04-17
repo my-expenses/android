@@ -3,7 +3,9 @@ package com.motawfik.expenses.network
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.motawfik.expenses.BuildConfig
 import com.motawfik.expenses.categories.CategoriesResponse
+import com.motawfik.expenses.models.Transaction
 import com.motawfik.expenses.repos.TokenRepository
+import com.motawfik.expenses.transactions.TransactionResponse
 import com.motawfik.expenses.transactions.TransactionsResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -21,9 +23,9 @@ private val tokenRepository by inject(TokenRepository::class.java)
 
 private val httpClient = OkHttpClient.Builder().addInterceptor {
     val request = it.request().newBuilder()
-            // add token to authorization header
+        // add token to authorization header
         .addHeader("Authorization", "Bearer ${tokenRepository.getTokenValue()}").build()
-        return@addInterceptor it.proceed(request)
+    return@addInterceptor it.proceed(request)
 }
 
 private val moshi = Moshi.Builder()
@@ -42,13 +44,13 @@ private val retrofit = Retrofit.Builder()
 interface UsersApiService {
     @FormUrlEncoded
     @POST("users/login")
-    fun login(@Field("email") email: String, @Field("password") password: String) :
+    fun login(@Field("email") email: String, @Field("password") password: String):
             Deferred<Map<String, String>>
 }
 
 
 object UsersApi {
-    val retrofitService : UsersApiService by lazy {
+    val retrofitService: UsersApiService by lazy {
         retrofit.create(UsersApiService::class.java)
     }
 }
@@ -62,22 +64,32 @@ interface TransactionsApiService {
         @Query("sortBy[]") sortBy: List<String>,
         @Query("sortDesc[]") sortDesc: List<String>,
         @Query("month") month: String,
-    ) : Deferred<TransactionsResponse>
+    ): Deferred<TransactionsResponse>
+
+    @PUT("/auth/transactions/{transactionID}")
+    fun updateTransaction(
+        @Path("transactionID") transactionID: Int,
+        @Body transaction: Transaction
+    ):
+            Deferred<TransactionResponse>
+
+    @POST("/auth/transactions")
+    fun createTransaction(@Body transaction: Transaction): Deferred<TransactionResponse>
 }
 
 object TransactionsApi {
-    val retrofitService : TransactionsApiService by lazy {
+    val retrofitService: TransactionsApiService by lazy {
         retrofit.create(TransactionsApiService::class.java)
     }
 }
 
 interface CategoriesApiService {
     @GET("/auth/categories")
-    fun getCategories() : Deferred<CategoriesResponse>
+    fun getCategories(): Deferred<CategoriesResponse>
 }
 
 object CategoriesApi {
-    val retrofitService : CategoriesApiService by lazy {
+    val retrofitService: CategoriesApiService by lazy {
         retrofit.create(CategoriesApiService::class.java)
     }
 }

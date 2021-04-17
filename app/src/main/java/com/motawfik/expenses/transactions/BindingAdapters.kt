@@ -27,13 +27,10 @@ fun TextView.bindAmountText(amount: Int, type: Boolean) {
 }
 
 @BindingAdapter("date")
-fun TextView.bindDate(date: Date?) {
+fun TextView.bindDate(date: Date) {
     val parser = SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy", Locale.US)
     val formatter = SimpleDateFormat("EEE, MMM dd, yyyy hh:mm a", Locale.US)
-    text = if (date == null)
-        formatter.format(parser.parse(Date().toString()))
-    else
-        formatter.format(parser.parse(date.toString())!!)
+    text = formatter.format(parser.parse(date.toString())!!)
 }
 
 @BindingAdapter("categoryName")
