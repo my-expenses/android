@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.chip.Chip
@@ -19,13 +20,13 @@ import com.motawfik.expenses.databinding.FragmentTransactionDataBinding
 import java.util.*
 
 class TransactionDataFragment : Fragment() {
-    private val viewModel = TransactionsViewModel()
     private val args: TransactionDataFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val viewModel = ViewModelProvider(requireActivity()).get(TransactionsViewModel::class.java)
         val transactionDataBinding = FragmentTransactionDataBinding.inflate(inflater)
 
         val transaction = args.transaction
@@ -85,7 +86,6 @@ class TransactionDataFragment : Fragment() {
         viewModel.saveStatus.observe(viewLifecycleOwner, {
             it?.let {
                 if (it == TRANSACTIONS_API_STATUS.DONE) {
-                    Log.d("STATUS_DONE", "SAVED SUCCESSFULLY")
                     showSnackbar(transactionDataBinding.root, Color.GREEN,"Transaction Saved Successfully")
                     findNavController().popBackStack()
                     viewModel.resetSaveStatus()

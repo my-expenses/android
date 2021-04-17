@@ -25,10 +25,12 @@ class TransactionsViewModel : ViewModel() {
     private val viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
+    // transactions from the DB
     private val _transactions = MutableLiveData<List<Transaction>>()
     val transactions: LiveData<List<Transaction>>
         get() = _transactions
 
+    // transaction details to edit
     private val _transactionData = MutableLiveData<Transaction>()
     val transactionData: LiveData<Transaction>
         get() = _transactionData
@@ -37,6 +39,7 @@ class TransactionsViewModel : ViewModel() {
         _transactionData.value = transaction
     }
 
+    // categories from db
     private val _categories = MutableLiveData<List<Category>>()
     val categories: LiveData<List<Category>>
         get() = _categories
@@ -45,18 +48,43 @@ class TransactionsViewModel : ViewModel() {
     val status: LiveData<TRANSACTIONS_API_STATUS>
         get() = _status
 
+    // transaction saving status (create/edit)
     private val _saveStatus = MutableLiveData(TRANSACTIONS_API_STATUS.INITIAL)
     val saveStatus: LiveData<TRANSACTIONS_API_STATUS>
         get() = _saveStatus
+    // transaction saving error message (create/edit)
     private val _saveErrorMessage = MutableLiveData("")
     val saveErrorMessage: LiveData<String>
         get() = _saveErrorMessage
+    // indicate if user created/updated a transaction
+    private val _saved = MutableLiveData(false)
+    val saved: LiveData<Boolean>
+        get() = _saved
 
     fun resetSaveStatus() {
         _saveStatus.value = TRANSACTIONS_API_STATUS.INITIAL
         _saveErrorMessage.value = ""
     }
 
+    // function to add updated transaction to the transactions list
+    fun addSavedTransactionToList() {
+        val transaction = transactionData.value
+        transaction?.let {
+            if (transaction.ID == 0) {  // new transaction was created
+                val updatedList = _transactions.value?.toMutableList()
+                updatedList?.add(transaction) // add transaction to list
+                _transactions.value = updatedList!!
+            }
+            else { // transaction was updated
+                val updatedList = _transactions.value?.map {
+                    if (it.ID == transaction.ID) transaction
+                    else it
+                }
+                _transactions.value = updatedList!!
+            }
+            _saved.value = false
+        }
+    }
 
     private val _categoriesStatus = MutableLiveData(CATEGORIES_API_STATUS.INITIAL)
     val categoriesStatus: LiveData<CATEGORIES_API_STATUS>
@@ -84,13 +112,13 @@ class TransactionsViewModel : ViewModel() {
             val getTransactionsDeferred = TransactionsApi.retrofitService.getTransactions(
                 0, 10, listOf("created_at"), listOf("true"),
                 SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-                    .format(Date())
+                    .format(Date(1614549600000))
             )
             try {
                 _status.value = TRANSACTIONS_API_STATUS.LOADING
                 val response = getTransactionsDeferred.await()
-                _status.value = TRANSACTIONS_API_STATUS.DONE
                 _transactions.value = response.transactions
+                _status.value = TRANSACTIONS_API_STATUS.DONE
             } catch (t: Throwable) {
                 t.printStackTrace()
                 _status.value = TRANSACTIONS_API_STATUS.ERROR
@@ -128,11 +156,11 @@ class TransactionsViewModel : ViewModel() {
                     _saveStatus.value = TRANSACTIONS_API_STATUS.LOADING
                     saveTransactionDeferred.await()
                     _saveStatus.value = TRANSACTIONS_API_STATUS.DONE
+                    _saved.value = true
                 } catch (t: Throwable) {
-                    when(t) {
+                    when (t) {
                         is HttpException -> {
                             if (t.code() == 400) {
-                                Log.d("SAVING_ERROR", t.response()?.errorBody().toString())
                                 val errorResponse = Gson().fromJson(
                                     t.response()?.errorBody()!!.string(), Map::class.java
                                 )
