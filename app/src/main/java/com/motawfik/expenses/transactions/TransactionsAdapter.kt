@@ -26,7 +26,11 @@ class TransactionsAdapter(
 
     class MyViewHolder private constructor(private val binding: ListItemTransactionBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Transaction, clickListener: TransactionListener, categories: LiveData<List<Category>>) {
+        fun bind(
+            item: Transaction,
+            clickListener: TransactionListener,
+            categories: LiveData<List<Category>>
+        ) {
             binding.transaction = item
             binding.clickListener = clickListener
             binding.category = categories.value?.find { it.ID == item.categoryID }
@@ -55,8 +59,14 @@ class PostDiffCallback : DiffUtil.ItemCallback<Transaction>() {
 }
 
 
-class TransactionListener(val clickListener: (transaction: Transaction) -> Unit) {
+class TransactionListener(
+    val clickListener: (transaction: Transaction) -> Unit,
+    val deleteListener: (transactionID: Int) -> Unit) {
     fun onClick(transaction: Transaction) {
         clickListener(transaction)
+    }
+
+    fun onDelete(transactionID: Int) {
+        deleteListener(transactionID)
     }
 }

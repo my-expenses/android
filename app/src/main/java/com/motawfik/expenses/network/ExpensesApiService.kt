@@ -13,6 +13,7 @@ import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
 import org.koin.java.KoinJavaComponent.inject
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
@@ -75,6 +76,10 @@ interface TransactionsApiService {
 
     @POST("/auth/transactions")
     fun createTransaction(@Body transaction: Transaction): Deferred<TransactionResponse>
+
+    @DELETE("/auth/transactions/{transactionID}")
+    fun deleteTransaction(@Path("transactionID") transactionID: Int):
+            Deferred<Response<Void>>
 }
 
 object TransactionsApi {

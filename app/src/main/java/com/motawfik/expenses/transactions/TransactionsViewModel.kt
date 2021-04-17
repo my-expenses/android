@@ -61,9 +61,25 @@ class TransactionsViewModel : ViewModel() {
     val saved: LiveData<Boolean>
         get() = _saved
 
+    // boolean to indicate if a deletion is in progress
+    private val _deletingTransaction = MutableLiveData(false)
+    // integer to hold the ID of the transaction being deleted
+    val deletingTransaction: LiveData<Boolean>
+        get() = _deletingTransaction
+    private val _transactionToDelete = MutableLiveData<Int?>()
+
     fun resetSaveStatus() {
         _saveStatus.value = TRANSACTIONS_API_STATUS.INITIAL
         _saveErrorMessage.value = ""
+    }
+
+    fun setTransactionToDelete(transactionID: Int) {
+        _deletingTransaction.value = true
+        _transactionToDelete.value = transactionID
+    }
+
+    fun resetTransactionToDelete() {
+        _deletingTransaction.value = false
     }
 
     // function to add updated transaction to the transactions list
@@ -83,6 +99,20 @@ class TransactionsViewModel : ViewModel() {
                 _transactions.value = updatedList!!
             }
             _saved.value = false
+        }
+    }
+
+    private fun removeDeletedTransactionFromList() {
+        // remove deleted transaction from the recyclerview
+        val updatedList = _transactions.value?.toMutableList()
+        updatedList?.let {
+            val deletedIndex = updatedList.indexOfFirst {
+                it.ID == _transactionToDelete.value!!
+            }
+            updatedList.removeAt(deletedIndex)
+            _transactions.value = updatedList.toList()
+            // reset transactionToDelete
+            _transactionToDelete.value = null
         }
     }
 
@@ -139,6 +169,19 @@ class TransactionsViewModel : ViewModel() {
                 t.printStackTrace()
                 _categoriesStatus.value = CATEGORIES_API_STATUS.ERROR
                 _categories.value = ArrayList()
+            }
+        }
+    }
+
+    fun deleteTransaction() {
+        coroutineScope.launch {
+            val deleteTransactionDeferred =
+                TransactionsApi.retrofitService.deleteTransaction(_transactionToDelete.value!!)
+            try {
+                deleteTransactionDeferred.await()
+                removeDeletedTransactionFromList()
+            } catch(t: Throwable) {
+                t.printStackTrace()
             }
         }
     }
