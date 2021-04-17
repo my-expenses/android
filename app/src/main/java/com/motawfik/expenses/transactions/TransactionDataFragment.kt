@@ -2,14 +2,12 @@ package com.motawfik.expenses.transactions
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
@@ -20,8 +18,6 @@ import com.motawfik.expenses.databinding.FragmentTransactionDataBinding
 import java.util.*
 
 class TransactionDataFragment : Fragment() {
-    private val args: TransactionDataFragmentArgs by navArgs()
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,22 +25,15 @@ class TransactionDataFragment : Fragment() {
         val viewModel = ViewModelProvider(requireActivity()).get(TransactionsViewModel::class.java)
         val transactionDataBinding = FragmentTransactionDataBinding.inflate(inflater)
 
-        val transaction = args.transaction
-        val categories = args.categories
-
-        viewModel.initializeTransaction(transaction)
-
         transactionDataBinding.viewModel = viewModel
-        transactionDataBinding.categories = categories.toList()
         viewModel.transactionData.observe(viewLifecycleOwner, {
             it?.let {
                 transactionDataBinding.transaction = it
             }
         })
 
-
         val chipGroup = transactionDataBinding.chipGroup
-        categories.forEach {
+        viewModel.categories.value?.forEach {
             val chip = layoutInflater.inflate(R.layout.single_chip_layout,
                 chipGroup, false) as Chip
             chip.id = it.ID
@@ -56,10 +45,10 @@ class TransactionDataFragment : Fragment() {
         val selectedTimeCalendar = Calendar.getInstance()
         transactionDataBinding.dateEditText.setOnClickListener {
             val calendar = Calendar.getInstance()
-            calendar.time = transaction.date
+            calendar.time = viewModel.transactionData.value?.date!!
 
             val datePicker = MaterialDatePicker.Builder.datePicker()
-                    .setSelection(transaction.date.time)
+                    .setSelection(viewModel.transactionData.value?.date!!.time)
                     .setTitleText("Select date")
                     .build()
             val timePicker = MaterialTimePicker.Builder()
@@ -76,8 +65,8 @@ class TransactionDataFragment : Fragment() {
             timePicker.addOnPositiveButtonClickListener {
                 selectedTimeCalendar.set(Calendar.HOUR, timePicker.hour)
                 selectedTimeCalendar.set(Calendar.MINUTE, timePicker.minute)
-                transaction.date = selectedTimeCalendar.time
-                viewModel.initializeTransaction(transaction)
+                viewModel.transactionData.value?.date = selectedTimeCalendar.time
+                viewModel.initializeTransaction(viewModel.transactionData.value!!)
             }
             datePicker.show(childFragmentManager, "date_tag")
         }

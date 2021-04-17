@@ -28,13 +28,6 @@
     <fragment
         android:id="@+id/transactionDataFragment"
         android:name="com.motawfik.expenses.transactions.TransactionDataFragment"
-        android:label="TransactionDataFragment" >
-        <argument
-            android:name="transaction"
-            app:argType="com.motawfik.expenses.models.Transaction" />
-        <argument
-            android:name="categories"
-            app:argType="com.motawfik.expenses.models.Category[]" />
-    </fragment>
+        android:label="TransactionDataFragment" />
 
 </navigation>

@@ -8,9 +8,11 @@ import kotlinx.parcelize.Parcelize
 data class Transaction(
     val ID: Int = 0,
     val userID: Int = 0,
-    var categoryID: Int? = null,
+    var categoryID: Int? = 0,
     var amount: Int = 0,
     var title: String = "",
     var type: Boolean = false,
     var date: Date = Date(),
-) : Parcelable
+) : Parcelable {
+    var isNew = false
+}

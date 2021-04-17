@@ -66,13 +66,10 @@ fun MaterialButtonToggleGroup.getTypeButton(): Boolean {
 fun ChipGroup.setListeners(attrChange: InverseBindingListener?) =
     setOnCheckedChangeListener { _, _ -> attrChange?.onChange() }
 
-@BindingAdapter(value = ["selectedCategoryID", "categories"])
-fun ChipGroup.bindCustomCheckedChip(selectedCategoryID: Int, categories: List<Category>) {
+@BindingAdapter("selectedCategoryID")
+fun ChipGroup.bindCustomCheckedChip(selectedCategoryID: Int) {
     // find the correct chip and check it based on its ID
-    categories.forEach {
-        if (it.ID == selectedCategoryID)
-            check(it.ID)
-    }
+    check(selectedCategoryID)
 }
 
 @InverseBindingAdapter(attribute = "selectedCategoryID")

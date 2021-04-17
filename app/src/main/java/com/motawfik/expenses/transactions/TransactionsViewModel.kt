@@ -70,7 +70,7 @@ class TransactionsViewModel : ViewModel() {
     fun addSavedTransactionToList() {
         val transaction = transactionData.value
         transaction?.let {
-            if (transaction.ID == 0) {  // new transaction was created
+            if (transaction.isNew) {  // new transaction was created
                 val updatedList = _transactions.value?.toMutableList()
                 updatedList?.add(transaction) // add transaction to list
                 _transactions.value = updatedList!!
@@ -154,7 +154,9 @@ class TransactionsViewModel : ViewModel() {
 
                 try {
                     _saveStatus.value = TRANSACTIONS_API_STATUS.LOADING
-                    saveTransactionDeferred.await()
+                    val response = saveTransactionDeferred.await()
+                    response.transaction.isNew = (transaction.ID == 0)
+                    _transactionData.value = response.transaction
                     _saveStatus.value = TRANSACTIONS_API_STATUS.DONE
                     _saved.value = true
                 } catch (t: Throwable) {

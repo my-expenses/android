@@ -15,7 +15,7 @@ class TransactionsFragment : Fragment() {
     private lateinit var transactionsViewModel: TransactionsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // one viewmodel for both the transactions and the details fragments
+        // one viewModel for both the transactions and the details fragments
         transactionsViewModel = ViewModelProvider(requireActivity()).get(TransactionsViewModel::class.java)
         // get transactions in onCreate to avoid getting it each time fragment is populated
         // get transactions once and avoid fetching again when back/save button is pressed from the details fragment
@@ -32,9 +32,9 @@ class TransactionsFragment : Fragment() {
         transactionsBinding.viewModel = transactionsViewModel
 
         val transactionsAdapter = TransactionsAdapter(TransactionListener {
+            transactionsViewModel.initializeTransaction(it.copy())
             findNavController().navigate(TransactionsFragmentDirections
-                .actionTransactionsFragmentToTransactionDataFragment(
-                    it.copy(), transactionsViewModel.categories.value!!.toTypedArray()))
+                .actionTransactionsFragmentToTransactionDataFragment())
         }, transactionsViewModel.categories)
         transactionsBinding.transactionsList.adapter = transactionsAdapter
 
@@ -63,9 +63,9 @@ class TransactionsFragment : Fragment() {
         // when plus button is pressed, navigate to the data fragment with an empty transaction
         transactionsViewModel.navigateToDataFragment.observe(viewLifecycleOwner, {
             if (it) {
+                transactionsViewModel.initializeTransaction(Transaction())
                 findNavController().navigate(TransactionsFragmentDirections
-                    .actionTransactionsFragmentToTransactionDataFragment(
-                        Transaction(), transactionsViewModel.categories.value!!.toTypedArray()))
+                    .actionTransactionsFragmentToTransactionDataFragment())
                 transactionsViewModel.resetNavigationToDataFragment()
             }
         })
