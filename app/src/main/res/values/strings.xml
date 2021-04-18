@@ -21,4 +21,5 @@
     <string name="transactions_menu">Transactions</string>
     <string name="categories_menu">Categories</string>
     <string name="month_menu">Change Month</string>
+    <string name="logout_menu">Logout</string>
 </resources>

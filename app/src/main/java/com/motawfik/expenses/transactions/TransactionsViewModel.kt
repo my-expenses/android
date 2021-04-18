@@ -61,12 +61,26 @@ class TransactionsViewModel : ViewModel() {
     val saved: LiveData<Boolean>
         get() = _saved
 
+    private val _startShowingMonthDialog = MutableLiveData(false)
+    val startShowingMonthDialog: LiveData<Boolean>
+        get() = _startShowingMonthDialog
+
     // boolean to indicate if a deletion is in progress
     private val _deletingTransaction = MutableLiveData(false)
     // integer to hold the ID of the transaction being deleted
     val deletingTransaction: LiveData<Boolean>
         get() = _deletingTransaction
     private val _transactionToDelete = MutableLiveData<Int?>()
+
+    private val _transactionsMonth = MutableLiveData(Date())
+    val transactionsMonth: LiveData<Date>
+        get() = _transactionsMonth
+    val strTransactionsMonth: String
+        get() {
+             val parser = SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy", Locale.US)
+            val formatter = SimpleDateFormat("MMMM yyyy", Locale.US)
+            return formatter.format(parser.parse(_transactionsMonth.value.toString())!!)
+        }
 
     fun resetSaveStatus() {
         _saveStatus.value = TRANSACTIONS_API_STATUS.INITIAL
@@ -80,6 +94,19 @@ class TransactionsViewModel : ViewModel() {
 
     fun resetTransactionToDelete() {
         _deletingTransaction.value = false
+    }
+
+    fun appBarClicked() {
+        _startShowingMonthDialog.value = true
+    }
+
+    fun resetShowingMonthDialog() {
+        _startShowingMonthDialog.value = false
+    }
+
+    fun setTransactionsMonth(date: Long) {
+        _transactionsMonth.value = Date(date)
+        getTransactions()
     }
 
     // function to add updated transaction to the transactions list
@@ -142,7 +169,7 @@ class TransactionsViewModel : ViewModel() {
             val getTransactionsDeferred = TransactionsApi.retrofitService.getTransactions(
                 0, 10, listOf("created_at"), listOf("true"),
                 SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-                    .format(Date(1614549600000))
+                    .format(_transactionsMonth.value!!)
             )
             try {
                 _status.value = TRANSACTIONS_API_STATUS.LOADING

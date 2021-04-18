@@ -9,22 +9,35 @@
             type="com.motawfik.expenses.transactions.TransactionsViewModel"/>
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".transactions.TransactionsFragment">
 
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/dateAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/dateToolBar"
+                android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+                app:title="@{viewModel.strTransactionsMonth}"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:titleTextColor="@color/white"
+                android:onClick="@{() -> viewModel.appBarClicked()}"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize" />
+
+        </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/transactions_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@color/transactions_background"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatingActionButton"
@@ -34,11 +47,10 @@
             android:layout_marginBottom="16dp"
             android:clickable="true"
             android:focusable="true"
+            android:layout_gravity="end|bottom"
             android:onClick="@{() -> viewModel.startNavigationToDataFragment()}"
             android:src="@drawable/ic_baseline_add_24"
-            app:backgroundTint="@color/purple_200"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:backgroundTint="@color/purple_200"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

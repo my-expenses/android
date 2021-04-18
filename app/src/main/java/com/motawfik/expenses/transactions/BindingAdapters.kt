@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.chip.ChipGroup
 import com.motawfik.expenses.R
@@ -31,6 +32,14 @@ fun TextView.bindDate(date: Date) {
     val parser = SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy", Locale.US)
     val formatter = SimpleDateFormat("EEE, MMM dd, yyyy hh:mm a", Locale.US)
     text = formatter.format(parser.parse(date.toString())!!)
+}
+
+@BindingAdapter("date")
+fun MaterialToolbar.bindDate(date: Date) {
+    Log.d("DATE_CHANGED", "TRUE")
+    val parser = SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy", Locale.US)
+    val formatter = SimpleDateFormat("MMMM yyyy", Locale.US)
+    title = formatter.format(parser.parse(date.toString())!!)
 }
 
 @BindingAdapter("categoryName")

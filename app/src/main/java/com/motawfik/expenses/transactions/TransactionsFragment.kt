@@ -1,16 +1,21 @@
 package com.motawfik.expenses.transactions
 
 import android.os.Bundle
+import android.os.Parcel
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.motawfik.expenses.categories.CATEGORIES_API_STATUS
 import com.motawfik.expenses.databinding.FragmentTransactionsBinding
 import com.motawfik.expenses.models.Transaction
+import java.text.SimpleDateFormat
+import java.util.*
 
 class TransactionsFragment : Fragment() {
     private lateinit var transactionsViewModel: TransactionsViewModel
@@ -77,6 +82,27 @@ class TransactionsFragment : Fragment() {
                             transactionsViewModel.resetTransactionToDelete()
                         }
                         .show()
+                }
+            }
+        })
+
+        transactionsViewModel.startShowingMonthDialog.observe(viewLifecycleOwner, {
+            it?.let {
+                if (it) {
+                    // show date picker when the user clicks on the appbar
+                    val datePicker =
+                        MaterialDatePicker.Builder.datePicker()
+                            .setSelection(transactionsViewModel.transactionsMonth.value?.time)
+                            .setTitleText("Select Month")
+                            .build()
+                    datePicker.show(childFragmentManager, "month_tag")
+                    datePicker.addOnPositiveButtonClickListener { selectedDate ->
+                        selectedDate?.let {
+                            transactionsViewModel.setTransactionsMonth(selectedDate)
+                            transactionsBinding.dateToolBar.title = transactionsViewModel.strTransactionsMonth
+                            transactionsViewModel.resetShowingMonthDialog()
+                        }
+                    }
                 }
             }
         })
