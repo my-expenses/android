@@ -18,4 +18,7 @@
     <string name="expense_button">Expense</string>
     <string name="income_button">Income</string>
     <string name="date_text_field">Date</string>
+    <string name="transactions_menu">Transactions</string>
+    <string name="categories_menu">Categories</string>
+    <string name="month_menu">Change Month</string>
 </resources>

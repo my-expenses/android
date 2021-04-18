@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/transactionsFragment"
+            android:icon="@drawable/ic_baseline_date_range_24"
+            android:title="@string/month_menu" />
+        <item
+            android:id="@+id/usersLoginFragment"
+            android:icon="@drawable/ic_baseline_attach_money_24"
+            android:title="@string/transactions_menu"
+            android:checked="true" />
+<!--        <item-->
+<!--            android:id="@+id/categoriesItem"-->
+<!--            android:icon="@drawable/ic_baseline_category_24"-->
+<!--            android:title="@string/categories_menu" />-->
+    </group>
+</menu>

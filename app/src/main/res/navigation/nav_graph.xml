@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/usersLoginFragment"
         android:name="com.motawfik.expenses.login.UsersLoginFragment"
-        android:label="UsersLoginFragment"
+        android:label="Login"
         tools:layout="@layout/fragment_users_login">
         <action
             android:id="@+id/action_usersLoginFragment_to_transactionsFragment"
@@ -18,7 +18,7 @@
     <fragment
         android:id="@+id/transactionsFragment"
         android:name="com.motawfik.expenses.transactions.TransactionsFragment"
-        android:label="TransactionsFragment"
+        android:label="Transactions"
         tools:layout="@layout/fragment_transactions">
 
         <action
@@ -28,6 +28,6 @@
     <fragment
         android:id="@+id/transactionDataFragment"
         android:name="com.motawfik.expenses.transactions.TransactionDataFragment"
-        android:label="TransactionDataFragment" />
+        android:label="Transaction Data" />
 
 </navigation>
