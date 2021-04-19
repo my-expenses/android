@@ -2,15 +2,19 @@ package com.motawfik.expenses.transactions
 
 import android.os.Bundle
 import android.os.Parcel
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.NonNull
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.motawfik.expenses.R
 import com.motawfik.expenses.categories.CATEGORIES_API_STATUS
 import com.motawfik.expenses.databinding.FragmentTransactionsBinding
 import com.motawfik.expenses.models.Transaction
@@ -19,6 +23,7 @@ import java.util.*
 
 class TransactionsFragment : Fragment() {
     private lateinit var transactionsViewModel: TransactionsViewModel
+    private lateinit var transactionsBinding: FragmentTransactionsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // one viewModel for both the transactions and the details fragments
@@ -35,7 +40,7 @@ class TransactionsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        val transactionsBinding = FragmentTransactionsBinding.inflate(inflater)
+        transactionsBinding = FragmentTransactionsBinding.inflate(inflater)
         transactionsBinding.viewModel = transactionsViewModel
 
         val transactionClickListener = TransactionListener(
@@ -129,6 +134,30 @@ class TransactionsFragment : Fragment() {
                 transactionsViewModel.resetNavigationToDataFragment()
             }
         })
+
+        transactionsViewModel.status.observe(viewLifecycleOwner, {
+            it?.let {
+                if (it != TRANSACTIONS_API_STATUS.INITIAL) {
+                    // show loading indicator if the fetching status is loading
+                    // remove the loading indicator else
+                    transactionsBinding.swipeRefresh.isRefreshing =
+                        (it == TRANSACTIONS_API_STATUS.LOADING)
+                    transactionsViewModel.resetFetchStatus()
+                }
+            }
+        })
+
+        transactionsBinding.swipeRefresh.setOnRefreshListener {
+            transactionsViewModel.getTransactions()
+        }
+
+        // ge transactions when the user clicks on the refresh button in the toolbar
+        transactionsBinding.dateToolBar.menu.findItem(R.id.menu_refresh).setOnMenuItemClickListener {
+            it?.let {
+                transactionsViewModel.getTransactions()
+            }
+            true
+        }
 
         return transactionsBinding.root
     }

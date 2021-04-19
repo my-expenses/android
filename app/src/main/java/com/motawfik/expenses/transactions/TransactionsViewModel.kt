@@ -82,6 +82,10 @@ class TransactionsViewModel : ViewModel() {
             return formatter.format(parser.parse(_transactionsMonth.value.toString())!!)
         }
 
+    fun resetFetchStatus() {
+        _status.value = TRANSACTIONS_API_STATUS.INITIAL
+    }
+
     fun resetSaveStatus() {
         _saveStatus.value = TRANSACTIONS_API_STATUS.INITIAL
         _saveErrorMessage.value = ""
