@@ -1,19 +1,22 @@
 package com.motawfik.expenses.transactions
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.motawfik.expenses.categories.CATEGORIES_API_STATUS
 import com.motawfik.expenses.models.Category
 import com.motawfik.expenses.models.Transaction
 import com.motawfik.expenses.network.CategoriesApi
 import com.motawfik.expenses.network.TransactionsApi
+import com.motawfik.expenses.network.TransactionsApiService
+import com.motawfik.expenses.repos.TransactionsPagingSource
 import kotlinx.coroutines.*
 import retrofit2.HttpException
-import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -81,6 +84,12 @@ class TransactionsViewModel : ViewModel() {
             val formatter = SimpleDateFormat("MMMM yyyy", Locale.US)
             return formatter.format(parser.parse(_transactionsMonth.value.toString())!!)
         }
+
+    val pager = Pager(
+        PagingConfig(pageSize = TransactionsPagingSource.PAGE_SIZE)
+    ) {
+        TransactionsPagingSource(TransactionsApi.retrofitService, _transactionsMonth.value!!)
+    }.flow.cachedIn(viewModelScope)
 
     fun resetFetchStatus() {
         _status.value = TRANSACTIONS_API_STATUS.INITIAL
@@ -169,23 +178,24 @@ class TransactionsViewModel : ViewModel() {
 
 
     fun getTransactions() {
-        coroutineScope.launch {
-            val getTransactionsDeferred = TransactionsApi.retrofitService.getTransactions(
-                0, 10, listOf("created_at"), listOf("true"),
-                SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-                    .format(_transactionsMonth.value!!)
-            )
-            try {
-                _status.value = TRANSACTIONS_API_STATUS.LOADING
-                val response = getTransactionsDeferred.await()
-                _transactions.value = response.transactions
-                _status.value = TRANSACTIONS_API_STATUS.DONE
-            } catch (t: Throwable) {
-                t.printStackTrace()
-                _status.value = TRANSACTIONS_API_STATUS.ERROR
-                _transactions.value = ArrayList()
-            }
-        }
+
+
+//        coroutineScope.launch {
+//            val getTransactionsDeferred = TransactionsApi.retrofitService.getTransactions(
+//                0, 10, listOf("created_at"), listOf("true"),
+//                SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+//                    .format(_transactionsMonth.value!!)
+//            )
+//            try {
+//                _status.value = TRANSACTIONS_API_STATUS.LOADING
+//                _transactions.value = getTransactionsDeferred.transactions
+//                _status.value = TRANSACTIONS_API_STATUS.DONE
+//            } catch (t: Throwable) {
+//                t.printStackTrace()
+//                _status.value = TRANSACTIONS_API_STATUS.ERROR
+//                _transactions.value = ArrayList()
+//            }
+//        }
     }
 
     fun getCategories() {

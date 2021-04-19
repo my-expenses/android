@@ -3,8 +3,8 @@ package com.motawfik.expenses.transactions
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.motawfik.expenses.databinding.ListItemTransactionBinding
 import com.motawfik.expenses.models.Category
@@ -13,7 +13,7 @@ import com.motawfik.expenses.models.Transaction
 class TransactionsAdapter(
     private val clickListener: TransactionListener,
     private val categories: LiveData<List<Category>>,
-) : ListAdapter<Transaction, TransactionsAdapter.MyViewHolder>(PostDiffCallback()) {
+) : PagingDataAdapter<Transaction, TransactionsAdapter.MyViewHolder>(PostDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder.from(parent)
@@ -27,13 +27,13 @@ class TransactionsAdapter(
     class MyViewHolder private constructor(private val binding: ListItemTransactionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            item: Transaction,
+            item: Transaction?,
             clickListener: TransactionListener,
             categories: LiveData<List<Category>>
         ) {
             binding.transaction = item
             binding.clickListener = clickListener
-            binding.category = categories.value?.find { it.ID == item.categoryID }
+            binding.category = categories.value?.find { it.ID == item?.categoryID }
             binding.executePendingBindings()
         }
 

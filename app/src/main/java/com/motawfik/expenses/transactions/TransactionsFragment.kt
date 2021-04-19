@@ -1,24 +1,21 @@
 package com.motawfik.expenses.transactions
 
 import android.os.Bundle
-import android.os.Parcel
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.NonNull
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.motawfik.expenses.R
 import com.motawfik.expenses.categories.CATEGORIES_API_STATUS
 import com.motawfik.expenses.databinding.FragmentTransactionsBinding
 import com.motawfik.expenses.models.Transaction
-import java.text.SimpleDateFormat
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.*
 
 class TransactionsFragment : Fragment() {
@@ -54,14 +51,19 @@ class TransactionsFragment : Fragment() {
                 transactionsViewModel.setTransactionToDelete(it)
             }
         )
-        val transactionsAdapter = TransactionsAdapter(transactionClickListener,
+        val transactionsPagingAdapter = TransactionsAdapter(transactionClickListener,
             transactionsViewModel.categories)
 
-        transactionsBinding.transactionsList.adapter = transactionsAdapter
+        transactionsBinding.transactionsList.adapter = transactionsPagingAdapter
 
-        transactionsViewModel.transactions.observe(viewLifecycleOwner, {
-            transactionsAdapter.submitList(it)
-        })
+        lifecycleScope.launch {
+            transactionsViewModel.pager.collectLatest { pagingData ->
+                transactionsPagingAdapter.submitData(pagingData)
+            }
+        }
+//        transactionsViewModel.transactions.observe(viewLifecycleOwner, {
+//            transactionsPagingAdapter.submitData(it)
+//        })
 
         // listen for (saved) variable to know if there's a new/updated record that has been posted to the DB
         transactionsViewModel.saved.observe(viewLifecycleOwner, {

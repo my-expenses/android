@@ -59,13 +59,13 @@ object UsersApi {
 
 interface TransactionsApiService {
     @GET("/auth/transactions")
-    fun getTransactions(
+    suspend fun getTransactions(
         @Query("page") page: Int,
         @Query("itemsPerPage") itemsPerPage: Int,
         @Query("sortBy[]") sortBy: List<String>,
         @Query("sortDesc[]") sortDesc: List<String>,
         @Query("month") month: String,
-    ): Deferred<TransactionsResponse>
+    ): TransactionsResponse
 
     @PUT("/auth/transactions/{transactionID}")
     fun updateTransaction(
