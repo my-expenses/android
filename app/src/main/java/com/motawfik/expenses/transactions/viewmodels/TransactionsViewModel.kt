@@ -10,11 +10,10 @@ import androidx.paging.cachedIn
 import com.google.gson.Gson
 import com.motawfik.expenses.categories.CATEGORIES_API_STATUS
 import com.motawfik.expenses.models.Category
-import com.motawfik.expenses.models.Transaction
+import com.motawfik.expenses.transactions.models.Transaction
 import com.motawfik.expenses.network.CategoriesApi
 import com.motawfik.expenses.network.TransactionsApi
-import com.motawfik.expenses.network.TransactionsApiService
-import com.motawfik.expenses.repos.TransactionsPagingSource
+import com.motawfik.expenses.transactions.repos.TransactionsPagingSource
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 import java.text.SimpleDateFormat

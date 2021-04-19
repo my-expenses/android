@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.motawfik.expenses.databinding.ListItemTransactionBinding
 import com.motawfik.expenses.models.Category
-import com.motawfik.expenses.models.Transaction
+import com.motawfik.expenses.transactions.models.Transaction
 
 class TransactionsAdapter(
     private val clickListener: TransactionListener,

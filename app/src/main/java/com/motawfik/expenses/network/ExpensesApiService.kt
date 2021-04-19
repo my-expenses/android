@@ -3,7 +3,7 @@ package com.motawfik.expenses.network
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.motawfik.expenses.BuildConfig
 import com.motawfik.expenses.categories.CategoriesResponse
-import com.motawfik.expenses.models.Transaction
+import com.motawfik.expenses.transactions.models.Transaction
 import com.motawfik.expenses.repos.TokenRepository
 import com.motawfik.expenses.transactions.TransactionResponse
 import com.motawfik.expenses.transactions.TransactionsResponse

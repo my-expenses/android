@@ -1,8 +1,8 @@
-package com.motawfik.expenses.repos
+package com.motawfik.expenses.transactions.repos
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.motawfik.expenses.models.Transaction
+import com.motawfik.expenses.transactions.models.Transaction
 import com.motawfik.expenses.network.TransactionsApiService
 import java.text.SimpleDateFormat
 import java.util.*

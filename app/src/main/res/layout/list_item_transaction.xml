@@ -7,7 +7,7 @@
 
         <variable
             name="transaction"
-            type="com.motawfik.expenses.models.Transaction" />
+            type="com.motawfik.expenses.transactions.models.Transaction" />
 
         <variable
             name="clickListener"
