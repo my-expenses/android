@@ -119,7 +119,6 @@ class TransactionsViewModel : ViewModel() {
 
     fun setTransactionsMonth(date: Long) {
         _transactionsMonth.value = Date(date)
-        getTransactions()
     }
 
     // function to add updated transaction to the transactions list
@@ -174,28 +173,6 @@ class TransactionsViewModel : ViewModel() {
 
     fun resetNavigationToDataFragment() {
         _navigateToDataFragment.value = false
-    }
-
-
-    fun getTransactions() {
-
-
-//        coroutineScope.launch {
-//            val getTransactionsDeferred = TransactionsApi.retrofitService.getTransactions(
-//                0, 10, listOf("created_at"), listOf("true"),
-//                SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-//                    .format(_transactionsMonth.value!!)
-//            )
-//            try {
-//                _status.value = TRANSACTIONS_API_STATUS.LOADING
-//                _transactions.value = getTransactionsDeferred.transactions
-//                _status.value = TRANSACTIONS_API_STATUS.DONE
-//            } catch (t: Throwable) {
-//                t.printStackTrace()
-//                _status.value = TRANSACTIONS_API_STATUS.ERROR
-//                _transactions.value = ArrayList()
-//            }
-//        }
     }
 
     fun getCategories() {

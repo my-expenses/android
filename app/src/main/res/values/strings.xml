@@ -23,4 +23,5 @@
     <string name="month_menu">Change Month</string>
     <string name="logout_menu">Logout</string>
     <string name="menu_refresh">Refresh</string>
+    <string name="empty_list">No transactions found, try changing the month or start adding new ones</string>
 </resources>

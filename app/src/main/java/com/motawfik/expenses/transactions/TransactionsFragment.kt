@@ -5,9 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.motawfik.expenses.R
@@ -16,7 +19,6 @@ import com.motawfik.expenses.databinding.FragmentTransactionsBinding
 import com.motawfik.expenses.models.Transaction
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.*
 
 class TransactionsFragment : Fragment() {
     private lateinit var transactionsViewModel: TransactionsViewModel
@@ -54,7 +56,7 @@ class TransactionsFragment : Fragment() {
         val transactionsPagingAdapter = TransactionsAdapter(transactionClickListener,
             transactionsViewModel.categories)
 
-        transactionsBinding.transactionsList.adapter = transactionsPagingAdapter
+        initAdapter(transactionsPagingAdapter)
 
         lifecycleScope.launch {
             transactionsViewModel.pager.collectLatest { pagingData ->
@@ -106,6 +108,7 @@ class TransactionsFragment : Fragment() {
                     datePicker.addOnPositiveButtonClickListener { selectedDate ->
                         selectedDate?.let {
                             transactionsViewModel.setTransactionsMonth(selectedDate)
+                            transactionsPagingAdapter.refresh()
                             transactionsBinding.dateToolBar.title = transactionsViewModel.strTransactionsMonth
                             transactionsViewModel.resetShowingMonthDialog()
                         }
@@ -115,12 +118,9 @@ class TransactionsFragment : Fragment() {
         })
 
         transactionsViewModel.categoriesStatus.observe(viewLifecycleOwner, {
-            when (it) {
-                CATEGORIES_API_STATUS.DONE -> {
-                    transactionsViewModel.getTransactions()
+            it?.let {
+                if (it == CATEGORIES_API_STATUS.DONE) {
                     transactionsViewModel.resetCategoriesStatus()
-                }
-                else -> {
                 }
             }
         })
@@ -137,30 +137,61 @@ class TransactionsFragment : Fragment() {
             }
         })
 
-        transactionsViewModel.status.observe(viewLifecycleOwner, {
-            it?.let {
-                if (it != TRANSACTIONS_API_STATUS.INITIAL) {
-                    // show loading indicator if the fetching status is loading
-                    // remove the loading indicator else
-                    transactionsBinding.swipeRefresh.isRefreshing =
-                        (it == TRANSACTIONS_API_STATUS.LOADING)
-                    transactionsViewModel.resetFetchStatus()
-                }
-            }
-        })
-
         transactionsBinding.swipeRefresh.setOnRefreshListener {
-            transactionsViewModel.getTransactions()
+            transactionsPagingAdapter.refresh()
         }
 
         // ge transactions when the user clicks on the refresh button in the toolbar
         transactionsBinding.dateToolBar.menu.findItem(R.id.menu_refresh).setOnMenuItemClickListener {
             it?.let {
-                transactionsViewModel.getTransactions()
+                transactionsBinding.transactionsList.scrollToPosition(0)
+                transactionsPagingAdapter.refresh()
             }
             true
         }
 
         return transactionsBinding.root
+    }
+
+    private fun initAdapter(transactionsPagingAdapter: TransactionsAdapter) {
+        transactionsPagingAdapter.addLoadStateListener { loadState ->
+            transactionsBinding.swipeRefresh.isRefreshing = loadState.refresh is LoadState.Loading
+            val isListEmpty = loadState.refresh is LoadState.NotLoading && transactionsPagingAdapter.itemCount == 0
+            showEmptyList(isListEmpty)
+
+            // Only show the list if refresh succeeds.
+            transactionsBinding.transactionsList.isVisible = loadState.source.refresh is LoadState.NotLoading
+            // Show loading spinner during initial load or refresh.
+            transactionsBinding.progressBar.isVisible = loadState.source.refresh is LoadState.Loading
+            // Show the retry state if initial load or refresh fails.
+            transactionsBinding.retryButton.isVisible = loadState.source.refresh is LoadState.Error
+
+            // Toast on any error, regardless of whether it came from RemoteMediator or PagingSource
+            val errorState = loadState.source.append as? LoadState.Error
+                ?: loadState.source.prepend as? LoadState.Error
+                ?: loadState.append as? LoadState.Error
+                ?: loadState.prepend as? LoadState.Error
+            errorState?.let {
+                Toast.makeText(
+                    requireContext(),
+                    "\uD83D\uDE28 Wooops ${it.error}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
+        transactionsBinding.transactionsList.adapter = transactionsPagingAdapter.withLoadStateFooter(
+            footer = TransactionsLoadStateAdapter { transactionsPagingAdapter.retry() }
+        )
+    }
+
+    private fun showEmptyList(emptyList: Boolean) {
+        if (emptyList) {
+            transactionsBinding.emptyList.visibility = View.VISIBLE
+            transactionsBinding.transactionsList.visibility = View.GONE
+        } else {
+            transactionsBinding.emptyList.visibility = View.GONE
+            transactionsBinding.transactionsList.visibility = View.VISIBLE
+        }
     }
 }
