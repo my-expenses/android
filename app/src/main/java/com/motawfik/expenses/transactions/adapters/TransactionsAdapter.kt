@@ -1,4 +1,4 @@
-package com.motawfik.expenses.transactions
+package com.motawfik.expenses.transactions.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

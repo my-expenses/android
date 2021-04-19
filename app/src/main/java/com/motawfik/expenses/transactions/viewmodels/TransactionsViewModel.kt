@@ -1,4 +1,4 @@
-package com.motawfik.expenses.transactions
+package com.motawfik.expenses.transactions.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

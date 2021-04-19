@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -17,10 +16,10 @@ import com.motawfik.expenses.R
 import com.motawfik.expenses.categories.CATEGORIES_API_STATUS
 import com.motawfik.expenses.databinding.FragmentTransactionsBinding
 import com.motawfik.expenses.transactions.models.Transaction
-import com.motawfik.expenses.transactions.TransactionListener
-import com.motawfik.expenses.transactions.TransactionsAdapter
-import com.motawfik.expenses.transactions.TransactionsLoadStateAdapter
-import com.motawfik.expenses.transactions.TransactionsViewModel
+import com.motawfik.expenses.transactions.adapters.TransactionListener
+import com.motawfik.expenses.transactions.adapters.TransactionsAdapter
+import com.motawfik.expenses.transactions.adapters.TransactionsLoadStateAdapter
+import com.motawfik.expenses.transactions.viewmodels.TransactionsViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

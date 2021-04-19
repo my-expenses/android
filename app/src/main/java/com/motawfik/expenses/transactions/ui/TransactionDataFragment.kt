@@ -15,8 +15,8 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.motawfik.expenses.R
 import com.motawfik.expenses.databinding.FragmentTransactionDataBinding
-import com.motawfik.expenses.transactions.TRANSACTIONS_API_STATUS
-import com.motawfik.expenses.transactions.TransactionsViewModel
+import com.motawfik.expenses.transactions.viewmodels.TRANSACTIONS_API_STATUS
+import com.motawfik.expenses.transactions.viewmodels.TransactionsViewModel
 import java.util.*
 
 class TransactionDataFragment : Fragment() {

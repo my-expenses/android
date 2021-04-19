@@ -11,7 +11,7 @@
 
         <variable
             name="clickListener"
-            type="com.motawfik.expenses.transactions.TransactionListener" />
+            type="com.motawfik.expenses.transactions.adapters.TransactionListener" />
 
         <variable
             name="category"

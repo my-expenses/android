@@ -5,8 +5,8 @@ import com.motawfik.expenses.BuildConfig
 import com.motawfik.expenses.categories.CategoriesResponse
 import com.motawfik.expenses.transactions.models.Transaction
 import com.motawfik.expenses.repos.TokenRepository
-import com.motawfik.expenses.transactions.TransactionResponse
-import com.motawfik.expenses.transactions.TransactionsResponse
+import com.motawfik.expenses.transactions.models.TransactionResponse
+import com.motawfik.expenses.transactions.models.TransactionsResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
