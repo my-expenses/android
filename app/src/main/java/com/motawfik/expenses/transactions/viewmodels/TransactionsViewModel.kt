@@ -1,9 +1,11 @@
 package com.motawfik.expenses.transactions.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
@@ -13,7 +15,8 @@ import com.motawfik.expenses.models.Category
 import com.motawfik.expenses.transactions.models.Transaction
 import com.motawfik.expenses.network.CategoriesApi
 import com.motawfik.expenses.network.TransactionsApi
-import com.motawfik.expenses.transactions.repos.TransactionsPagingSource
+import com.motawfik.expenses.repos.TransactionsDatabase
+import com.motawfik.expenses.transactions.repos.TransactionsRemoteMediator
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 import java.text.SimpleDateFormat
@@ -23,7 +26,7 @@ import kotlin.collections.ArrayList
 
 enum class TRANSACTIONS_API_STATUS { INITIAL, LOADING, ERROR, DONE }
 
-class TransactionsViewModel : ViewModel() {
+class TransactionsViewModel(context: Context) : ViewModel() {
     private val viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
@@ -45,10 +48,6 @@ class TransactionsViewModel : ViewModel() {
     private val _categories = MutableLiveData<List<Category>>()
     val categories: LiveData<List<Category>>
         get() = _categories
-
-    private val _status = MutableLiveData(TRANSACTIONS_API_STATUS.INITIAL)
-    val status: LiveData<TRANSACTIONS_API_STATUS>
-        get() = _status
 
     // transaction saving status (create/edit)
     private val _saveStatus = MutableLiveData(TRANSACTIONS_API_STATUS.INITIAL)
@@ -77,6 +76,21 @@ class TransactionsViewModel : ViewModel() {
     private val _transactionsMonth = MutableLiveData(Date())
     val transactionsMonth: LiveData<Date>
         get() = _transactionsMonth
+    private val _transactionsStartOfMonth: Date
+    get() {
+        val calendar = Calendar.getInstance()
+        calendar.time =_transactionsMonth.value!!
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH))
+        return calendar.time
+    }
+    private val _transactionsEndOfMonth: Date
+        get() {
+            val calendar = Calendar.getInstance()
+            calendar.time =_transactionsMonth.value!!
+            calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+            return calendar.time
+        }
+
     val strTransactionsMonth: String
         get() {
              val parser = SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy", Locale.US)
@@ -84,15 +98,18 @@ class TransactionsViewModel : ViewModel() {
             return formatter.format(parser.parse(_transactionsMonth.value.toString())!!)
         }
 
+    @ExperimentalPagingApi
     val pager = Pager(
-        PagingConfig(pageSize = TransactionsPagingSource.PAGE_SIZE)
+        config = PagingConfig(pageSize = TransactionsRemoteMediator.PAGE_SIZE, enablePlaceholders = false),
+        remoteMediator = TransactionsRemoteMediator(
+            TransactionsApi.retrofitService,
+            TransactionsDatabase.getINSTANCE(context),
+            _transactionsMonth.value!!)
     ) {
-        TransactionsPagingSource(TransactionsApi.retrofitService, _transactionsMonth.value!!)
+        TransactionsDatabase.getINSTANCE(context).transactionDao().pagingSource(
+            _transactionsStartOfMonth, _transactionsEndOfMonth
+        )
     }.flow.cachedIn(viewModelScope)
-
-    fun resetFetchStatus() {
-        _status.value = TRANSACTIONS_API_STATUS.INITIAL
-    }
 
     fun resetSaveStatus() {
         _saveStatus.value = TRANSACTIONS_API_STATUS.INITIAL

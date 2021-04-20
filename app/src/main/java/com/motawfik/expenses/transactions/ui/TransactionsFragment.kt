@@ -1,14 +1,17 @@
 package com.motawfik.expenses.transactions.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -20,23 +23,28 @@ import com.motawfik.expenses.transactions.adapters.TransactionListener
 import com.motawfik.expenses.transactions.adapters.TransactionsAdapter
 import com.motawfik.expenses.transactions.adapters.TransactionsLoadStateAdapter
 import com.motawfik.expenses.transactions.viewmodels.TransactionsViewModel
+import com.motawfik.expenses.viewmodelfactory.ViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class TransactionsFragment : Fragment() {
     private lateinit var transactionsViewModel: TransactionsViewModel
     private lateinit var transactionsBinding: FragmentTransactionsBinding
+    private lateinit var transactionsPagingAdapter: TransactionsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // one viewModel for both the transactions and the details fragments
+        val app = requireNotNull(this.activity).application
+        val viewModelFactory = ViewModelFactory(app)
         transactionsViewModel =
-            ViewModelProvider(requireActivity()).get(TransactionsViewModel::class.java)
+            ViewModelProvider(requireActivity(), viewModelFactory).get(TransactionsViewModel::class.java)
         // get transactions in onCreate to avoid getting it each time fragment is populated
         // get transactions once and avoid fetching again when back/save button is pressed from the details fragment
         transactionsViewModel.getCategories()
         super.onCreate(savedInstanceState)
     }
 
+    @ExperimentalPagingApi
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,7 +64,7 @@ class TransactionsFragment : Fragment() {
                 transactionsViewModel.setTransactionToDelete(it)
             }
         )
-        val transactionsPagingAdapter = TransactionsAdapter(transactionClickListener,
+        transactionsPagingAdapter = TransactionsAdapter(transactionClickListener,
             transactionsViewModel.categories)
 
         initAdapter(transactionsPagingAdapter)
@@ -66,9 +74,6 @@ class TransactionsFragment : Fragment() {
                 transactionsPagingAdapter.submitData(pagingData)
             }
         }
-//        transactionsViewModel.transactions.observe(viewLifecycleOwner, {
-//            transactionsPagingAdapter.submitData(it)
-//        })
 
         // listen for (saved) variable to know if there's a new/updated record that has been posted to the DB
         transactionsViewModel.saved.observe(viewLifecycleOwner, {
@@ -147,7 +152,6 @@ class TransactionsFragment : Fragment() {
         // ge transactions when the user clicks on the refresh button in the toolbar
         transactionsBinding.dateToolBar.menu.findItem(R.id.menu_refresh).setOnMenuItemClickListener {
             it?.let {
-                transactionsBinding.transactionsList.scrollToPosition(0)
                 transactionsPagingAdapter.refresh()
             }
             true
@@ -163,11 +167,11 @@ class TransactionsFragment : Fragment() {
             showEmptyList(isListEmpty)
 
             // Only show the list if refresh succeeds.
-            transactionsBinding.transactionsList.isVisible = loadState.source.refresh is LoadState.NotLoading
+            transactionsBinding.transactionsList.isVisible = loadState.mediator?.refresh is LoadState.NotLoading
             // Show loading spinner during initial load or refresh.
-            transactionsBinding.progressBar.isVisible = loadState.source.refresh is LoadState.Loading
+            transactionsBinding.progressBar.isVisible = loadState.mediator?.refresh is LoadState.Loading
             // Show the retry state if initial load or refresh fails.
-            transactionsBinding.retryButton.isVisible = loadState.source.refresh is LoadState.Error
+            transactionsBinding.retryButton.isVisible = loadState.mediator?.refresh is LoadState.Error
 
             // Toast on any error, regardless of whether it came from RemoteMediator or PagingSource
             val errorState = loadState.source.append as? LoadState.Error

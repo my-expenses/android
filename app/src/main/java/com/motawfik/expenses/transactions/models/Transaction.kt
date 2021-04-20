@@ -1,11 +1,16 @@
 package com.motawfik.expenses.transactions.models
 
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import java.util.*
 import kotlinx.parcelize.Parcelize
 
+@Entity(tableName = "transactions")
 @Parcelize
 data class Transaction(
+    @PrimaryKey
     val ID: Int = 0,
     val userID: Int = 0,
     var categoryID: Int? = 0,
@@ -14,5 +19,5 @@ data class Transaction(
     var type: Boolean = false,
     var date: Date = Date(),
 ) : Parcelable {
-    var isNew = false
+    @Ignore var isNew = false
 }
