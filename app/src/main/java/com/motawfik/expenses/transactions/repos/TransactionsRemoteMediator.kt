@@ -77,7 +77,7 @@ class TransactionsRemoteMediator(
     }
 
     companion object {
-        const val PAGE_SIZE = 3
+        const val PAGE_SIZE = 10
         private var currentPage = 1
     }
 }

@@ -75,14 +75,6 @@ class TransactionsFragment : Fragment() {
             }
         }
 
-        // listen for (saved) variable to know if there's a new/updated record that has been posted to the DB
-        transactionsViewModel.saved.observe(viewLifecycleOwner, {
-            it?.let {
-                if (it) // if new/updated record
-                    transactionsViewModel.addSavedTransactionToList() //show the record in the recyclerview
-            }
-        })
-
         transactionsViewModel.deletingTransaction.observe(viewLifecycleOwner, {
             // the user clicked on the delete button
             it?.let {

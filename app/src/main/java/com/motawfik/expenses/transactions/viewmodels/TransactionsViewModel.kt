@@ -30,11 +30,6 @@ class TransactionsViewModel(context: Context) : ViewModel() {
     private val viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    // transactions from the DB
-    private val _transactions = MutableLiveData<List<Transaction>>()
-    val transactions: LiveData<List<Transaction>>
-        get() = _transactions
-
     // transaction details to edit
     private val _transactionData = MutableLiveData<Transaction>()
     val transactionData: LiveData<Transaction>
@@ -57,10 +52,6 @@ class TransactionsViewModel(context: Context) : ViewModel() {
     private val _saveErrorMessage = MutableLiveData("")
     val saveErrorMessage: LiveData<String>
         get() = _saveErrorMessage
-    // indicate if user created/updated a transaction
-    private val _saved = MutableLiveData(false)
-    val saved: LiveData<Boolean>
-        get() = _saved
 
     private val _startShowingMonthDialog = MutableLiveData(false)
     val startShowingMonthDialog: LiveData<Boolean>
@@ -98,15 +89,17 @@ class TransactionsViewModel(context: Context) : ViewModel() {
             return formatter.format(parser.parse(_transactionsMonth.value.toString())!!)
         }
 
+    private val _database = TransactionsDatabase.getINSTANCE(context)
+
     @ExperimentalPagingApi
     val pager = Pager(
         config = PagingConfig(pageSize = TransactionsRemoteMediator.PAGE_SIZE, enablePlaceholders = false),
         remoteMediator = TransactionsRemoteMediator(
             TransactionsApi.retrofitService,
-            TransactionsDatabase.getINSTANCE(context),
+            _database,
             _transactionsMonth.value!!)
     ) {
-        TransactionsDatabase.getINSTANCE(context).transactionDao().pagingSource(
+        _database.transactionDao().pagingSource(
             _transactionsStartOfMonth, _transactionsEndOfMonth
         )
     }.flow.cachedIn(viewModelScope)
@@ -135,40 +128,6 @@ class TransactionsViewModel(context: Context) : ViewModel() {
 
     fun setTransactionsMonth(date: Long) {
         _transactionsMonth.value = Date(date)
-    }
-
-    // function to add updated transaction to the transactions list
-    fun addSavedTransactionToList() {
-        val transaction = transactionData.value
-        transaction?.let {
-            if (transaction.isNew) {  // new transaction was created
-                val updatedList = _transactions.value?.toMutableList()
-                updatedList?.add(transaction) // add transaction to list
-                _transactions.value = updatedList!!
-            }
-            else { // transaction was updated
-                val updatedList = _transactions.value?.map {
-                    if (it.ID == transaction.ID) transaction
-                    else it
-                }
-                _transactions.value = updatedList!!
-            }
-            _saved.value = false
-        }
-    }
-
-    private fun removeDeletedTransactionFromList() {
-        // remove deleted transaction from the recyclerview
-        val updatedList = _transactions.value?.toMutableList()
-        updatedList?.let {
-            val deletedIndex = updatedList.indexOfFirst {
-                it.ID == _transactionToDelete.value!!
-            }
-            updatedList.removeAt(deletedIndex)
-            _transactions.value = updatedList.toList()
-            // reset transactionToDelete
-            _transactionToDelete.value = null
-        }
     }
 
     private val _categoriesStatus = MutableLiveData(CATEGORIES_API_STATUS.INITIAL)
@@ -213,7 +172,7 @@ class TransactionsViewModel(context: Context) : ViewModel() {
                 TransactionsApi.retrofitService.deleteTransaction(_transactionToDelete.value!!)
             try {
                 deleteTransactionDeferred.await()
-                removeDeletedTransactionFromList()
+                _database.transactionDao().deleteByID(_transactionToDelete.value!!)
             } catch(t: Throwable) {
                 t.printStackTrace()
             }
@@ -232,11 +191,11 @@ class TransactionsViewModel(context: Context) : ViewModel() {
                 try {
                     _saveStatus.value = TRANSACTIONS_API_STATUS.LOADING
                     val response = saveTransactionDeferred.await()
-                    response.transaction.isNew = (transaction.ID == 0)
                     _transactionData.value = response.transaction
+                    _database.transactionDao().insertOrUpdate(response.transaction)
                     _saveStatus.value = TRANSACTIONS_API_STATUS.DONE
-                    _saved.value = true
                 } catch (t: Throwable) {
+                    t.printStackTrace()
                     when (t) {
                         is HttpException -> {
                             if (t.code() == 400) {
