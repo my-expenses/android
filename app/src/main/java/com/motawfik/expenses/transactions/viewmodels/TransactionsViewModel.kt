@@ -108,7 +108,7 @@ class TransactionsViewModel(context: Context) : ViewModel() {
         remoteMediator = TransactionsRemoteMediator(
             TransactionsApi.retrofitService,
             _database,
-            _transactionsMonth.value!!)
+            transactionsMonth)
     ) {
         _database.transactionDao().pagingSource(
             _transactionsStartOfMonth, _transactionsEndOfMonth

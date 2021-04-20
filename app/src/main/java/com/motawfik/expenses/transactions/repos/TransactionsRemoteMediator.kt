@@ -1,5 +1,6 @@
 package com.motawfik.expenses.transactions.repos
 
+import androidx.lifecycle.LiveData
 import androidx.paging.*
 import androidx.room.withTransaction
 import com.motawfik.expenses.transactions.models.Transaction
@@ -14,14 +15,14 @@ import java.util.*
 class TransactionsRemoteMediator(
     private val backend: TransactionsApiService,
     private val database: TransactionsDatabase,
-    private val selectedMonth: Date,
+    private val selectedMonth: LiveData<Date>,
 ) : RemoteMediator<Int, Transaction>() {
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, Transaction>
     ): MediatorResult {
         val formattedDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-            .format(selectedMonth)
+            .format(selectedMonth.value!!)
 
         return try {
             // The network load method takes an optional page parameter
