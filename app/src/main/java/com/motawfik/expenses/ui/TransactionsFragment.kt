@@ -163,6 +163,10 @@ class TransactionsFragment : Fragment() {
             true
         }
 
+        transactionsBinding.retryButton.setOnClickListener {
+            transactionsPagingAdapter.refresh()
+        }
+
         return transactionsBinding.root
     }
 
