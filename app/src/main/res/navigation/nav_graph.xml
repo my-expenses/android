@@ -6,7 +6,7 @@
     app:startDestination="@id/transactionsFragment">
     <fragment
         android:id="@+id/usersLoginFragment"
-        android:name="com.motawfik.expenses.login.UsersLoginFragment"
+        android:name="com.motawfik.expenses.ui.UsersLoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_users_login">
         <action
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/transactionsFragment"
-        android:name="com.motawfik.expenses.transactions.ui.TransactionsFragment"
+        android:name="com.motawfik.expenses.ui.TransactionsFragment"
         android:label="Transactions"
         tools:layout="@layout/fragment_transactions">
 
@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/transactionDataFragment"
-        android:name="com.motawfik.expenses.transactions.ui.TransactionDataFragment"
+        android:name="com.motawfik.expenses.ui.TransactionDataFragment"
         android:label="Transaction Data" />
 
 </navigation>

@@ -6,13 +6,13 @@
     <data>
         <variable
             name="viewModel"
-            type="com.motawfik.expenses.transactions.viewmodels.TransactionsViewModel"/>
+            type="com.motawfik.expenses.viewmodel.TransactionsViewModel"/>
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".transactions.ui.TransactionsFragment">
+        tools:context=".ui.TransactionsFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/dateAppBar"

@@ -6,7 +6,7 @@
     <data class="UsersLoginFragmentBinding">
         <variable
             name="viewModel"
-            type="com.motawfik.expenses.login.UsersLoginViewModel"/>
+            type="com.motawfik.expenses.viewmodel.UsersLoginViewModel"/>
     </data>
 
     <ScrollView

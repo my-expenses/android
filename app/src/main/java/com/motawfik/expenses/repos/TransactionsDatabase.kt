@@ -6,8 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.motawfik.expenses.models.Category
-import com.motawfik.expenses.transactions.dao.TransactionDao
-import com.motawfik.expenses.transactions.models.Transaction
+import com.motawfik.expenses.dao.TransactionDao
+import com.motawfik.expenses.models.Transaction
 
 @Database(entities = [Transaction::class, Category::class], version = 1)
 @TypeConverters(DateConverter::class)

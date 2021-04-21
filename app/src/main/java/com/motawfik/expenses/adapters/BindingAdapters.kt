@@ -1,4 +1,4 @@
-package com.motawfik.expenses.transactions.adapters
+package com.motawfik.expenses.adapters
 
 import android.graphics.Color
 import android.util.Log

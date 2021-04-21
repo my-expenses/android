@@ -1,4 +1,4 @@
-package com.motawfik.expenses.categories
+package com.motawfik.expenses.models
 
 import android.os.Parcelable
 import com.motawfik.expenses.models.Category

@@ -7,11 +7,11 @@
 
         <variable
             name="viewModel"
-            type="com.motawfik.expenses.transactions.viewmodels.TransactionsViewModel" />
+            type="com.motawfik.expenses.viewmodel.TransactionsViewModel" />
 
         <variable
             name="transaction"
-            type="com.motawfik.expenses.transactions.models.Transaction" />
+            type="com.motawfik.expenses.models.Transaction" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

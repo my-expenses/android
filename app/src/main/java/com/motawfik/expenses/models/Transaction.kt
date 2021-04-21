@@ -1,4 +1,4 @@
-package com.motawfik.expenses.transactions.models
+package com.motawfik.expenses.models
 
 import android.os.Parcelable
 import androidx.room.Entity

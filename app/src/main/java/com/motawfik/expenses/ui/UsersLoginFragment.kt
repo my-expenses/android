@@ -1,15 +1,17 @@
-package com.motawfik.expenses.login
+package com.motawfik.expenses.ui
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.motawfik.expenses.databinding.UsersLoginFragmentBinding
 import com.motawfik.expenses.repos.TokenRepository
+import com.motawfik.expenses.viewmodel.LOGIN_STATUS
+import com.motawfik.expenses.viewmodel.UsersLoginViewModel
 import org.koin.java.KoinJavaComponent
 
 

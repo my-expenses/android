@@ -1,8 +1,8 @@
-package com.motawfik.expenses.transactions.dao
+package com.motawfik.expenses.dao
 
 import androidx.paging.PagingSource
 import androidx.room.*
-import com.motawfik.expenses.transactions.models.Transaction
+import com.motawfik.expenses.models.Transaction
 import java.util.*
 
 @Dao

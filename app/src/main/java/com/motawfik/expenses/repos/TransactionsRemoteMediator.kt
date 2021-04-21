@@ -1,11 +1,10 @@
-package com.motawfik.expenses.transactions.repos
+package com.motawfik.expenses.repos
 
 import androidx.lifecycle.LiveData
 import androidx.paging.*
 import androidx.room.withTransaction
-import com.motawfik.expenses.transactions.models.Transaction
+import com.motawfik.expenses.models.Transaction
 import com.motawfik.expenses.network.TransactionsApiService
-import com.motawfik.expenses.repos.TransactionsDatabase
 import retrofit2.HttpException
 import java.io.IOException
 import java.text.SimpleDateFormat

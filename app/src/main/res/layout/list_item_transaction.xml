@@ -7,11 +7,11 @@
 
         <variable
             name="transaction"
-            type="com.motawfik.expenses.transactions.models.Transaction" />
+            type="com.motawfik.expenses.models.Transaction" />
 
         <variable
             name="clickListener"
-            type="com.motawfik.expenses.transactions.adapters.TransactionListener" />
+            type="com.motawfik.expenses.adapters.TransactionListener" />
 
         <variable
             name="category"

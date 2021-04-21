@@ -1,7 +1,6 @@
-package com.motawfik.expenses.transactions.models
+package com.motawfik.expenses.models
 
 import android.os.Parcelable
-import com.motawfik.expenses.transactions.models.Transaction
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

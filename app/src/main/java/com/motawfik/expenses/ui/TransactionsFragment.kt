@@ -1,7 +1,6 @@
-package com.motawfik.expenses.transactions.ui
+package com.motawfik.expenses.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,13 +15,13 @@ import androidx.paging.LoadState
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.motawfik.expenses.R
-import com.motawfik.expenses.categories.CATEGORIES_API_STATUS
+import com.motawfik.expenses.viewmodel.CATEGORIES_API_STATUS
 import com.motawfik.expenses.databinding.FragmentTransactionsBinding
-import com.motawfik.expenses.transactions.models.Transaction
-import com.motawfik.expenses.transactions.adapters.TransactionListener
-import com.motawfik.expenses.transactions.adapters.TransactionsAdapter
-import com.motawfik.expenses.transactions.adapters.TransactionsLoadStateAdapter
-import com.motawfik.expenses.transactions.viewmodels.TransactionsViewModel
+import com.motawfik.expenses.models.Transaction
+import com.motawfik.expenses.adapters.TransactionListener
+import com.motawfik.expenses.adapters.TransactionsAdapter
+import com.motawfik.expenses.adapters.TransactionsLoadStateAdapter
+import com.motawfik.expenses.viewmodel.TransactionsViewModel
 import com.motawfik.expenses.viewmodelfactory.ViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -57,8 +56,7 @@ class TransactionsFragment : Fragment() {
             {
                 transactionsViewModel.initializeTransaction(it.copy())
                 findNavController ().navigate(
-                    TransactionsFragmentDirections
-                        .actionTransactionsFragmentToTransactionDataFragment()
+                    TransactionsFragmentDirections.actionTransactionsFragmentToTransactionDataFragment()
                 )
             }, {
                 transactionsViewModel.setTransactionToDelete(it)
@@ -130,8 +128,7 @@ class TransactionsFragment : Fragment() {
             if (it) {
                 transactionsViewModel.initializeTransaction(Transaction())
                 findNavController().navigate(
-                    TransactionsFragmentDirections
-                        .actionTransactionsFragmentToTransactionDataFragment()
+                    TransactionsFragmentDirections.actionTransactionsFragmentToTransactionDataFragment()
                 )
                 transactionsViewModel.resetNavigationToDataFragment()
             }
