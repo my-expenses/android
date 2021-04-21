@@ -10,9 +10,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.google.gson.Gson
-import com.motawfik.expenses.models.Category
 import com.motawfik.expenses.models.Transaction
-import com.motawfik.expenses.network.CategoriesApi
 import com.motawfik.expenses.network.TransactionsApi
 import com.motawfik.expenses.repos.TransactionsDatabase
 import com.motawfik.expenses.repos.TransactionsRemoteMediator
@@ -37,11 +35,6 @@ class TransactionsViewModel(context: Context) : ViewModel() {
     fun initializeTransaction(transaction: Transaction) {
         _transactionData.value = transaction
     }
-
-    // categories from db
-    private val _categories = MutableLiveData<List<Category>>()
-    val categories: LiveData<List<Category>>
-        get() = _categories
 
     // transaction saving status (create/edit)
     private val _saveStatus = MutableLiveData(TRANSACTIONS_API_STATUS.INITIAL)
@@ -139,14 +132,6 @@ class TransactionsViewModel(context: Context) : ViewModel() {
         _transactionsMonth.value = Date(date)
     }
 
-    private val _categoriesStatus = MutableLiveData(CATEGORIES_API_STATUS.INITIAL)
-    val categoriesStatus: LiveData<CATEGORIES_API_STATUS>
-        get() = _categoriesStatus
-
-    fun resetCategoriesStatus() {
-        _categoriesStatus.value = CATEGORIES_API_STATUS.INITIAL
-    }
-
     private val _navigateToDataFragment = MutableLiveData(false)
     val navigateToDataFragment: LiveData<Boolean>
         get() = _navigateToDataFragment
@@ -157,22 +142,6 @@ class TransactionsViewModel(context: Context) : ViewModel() {
 
     fun resetNavigationToDataFragment() {
         _navigateToDataFragment.value = false
-    }
-
-    fun getCategories() {
-        coroutineScope.launch {
-            val getCategoriesDeferred = CategoriesApi.retrofitService.getCategories()
-            try {
-                _categoriesStatus.value = CATEGORIES_API_STATUS.INITIAL
-                val response = getCategoriesDeferred.await()
-                _categories.value = response.categories
-                _categoriesStatus.value = CATEGORIES_API_STATUS.DONE
-            } catch (t: Throwable) {
-                t.printStackTrace()
-                _categoriesStatus.value = CATEGORIES_API_STATUS.ERROR
-                _categories.value = ArrayList()
-            }
-        }
     }
 
     fun deleteTransaction() {

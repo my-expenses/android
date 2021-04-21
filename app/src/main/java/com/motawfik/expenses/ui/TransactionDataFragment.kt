@@ -15,6 +15,7 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.motawfik.expenses.R
 import com.motawfik.expenses.databinding.FragmentTransactionDataBinding
+import com.motawfik.expenses.viewmodel.CategoriesViewModel
 import com.motawfik.expenses.viewmodel.TRANSACTIONS_API_STATUS
 import com.motawfik.expenses.viewmodel.TransactionsViewModel
 import java.util.*
@@ -25,6 +26,8 @@ class TransactionDataFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val viewModel = ViewModelProvider(requireActivity()).get(TransactionsViewModel::class.java)
+        val categoriesViewModel = ViewModelProvider(requireActivity()).get(CategoriesViewModel::class.java)
+
         val transactionDataBinding = FragmentTransactionDataBinding.inflate(inflater)
 
         transactionDataBinding.viewModel = viewModel
@@ -35,7 +38,7 @@ class TransactionDataFragment : Fragment() {
         })
 
         val chipGroup = transactionDataBinding.chipGroup
-        viewModel.categories.value?.forEach {
+        categoriesViewModel.categories.value?.forEach {
             val chip = layoutInflater.inflate(R.layout.single_chip_layout,
                 chipGroup, false) as Chip
             chip.id = it.ID
