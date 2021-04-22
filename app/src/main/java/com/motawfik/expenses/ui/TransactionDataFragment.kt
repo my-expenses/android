@@ -15,6 +15,8 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.motawfik.expenses.R
 import com.motawfik.expenses.databinding.FragmentTransactionDataBinding
+import com.motawfik.expenses.utils.showErrorSnackbar
+import com.motawfik.expenses.utils.showSuccessSnackbar
 import com.motawfik.expenses.viewmodel.CategoriesViewModel
 import com.motawfik.expenses.viewmodel.TRANSACTIONS_API_STATUS
 import com.motawfik.expenses.viewmodel.TransactionsViewModel
@@ -80,24 +82,16 @@ class TransactionDataFragment : Fragment() {
         viewModel.saveStatus.observe(viewLifecycleOwner, {
             it?.let {
                 if (it == TRANSACTIONS_API_STATUS.DONE) {
-                    showSnackbar(transactionDataBinding.root, Color.GREEN,"Transaction Saved Successfully")
+                    showSuccessSnackbar(transactionDataBinding.root, "Transaction Saved Successfully")
                     findNavController().popBackStack()
                     viewModel.resetSaveStatus()
                 } else if (it == TRANSACTIONS_API_STATUS.ERROR) {
-                    showSnackbar(transactionDataBinding.root, Color.RED, viewModel.saveErrorMessage.value!!)
+                    showErrorSnackbar(transactionDataBinding.root, viewModel.saveErrorMessage.value!!)
                     viewModel.resetSaveStatus()
                 }
             }
         })
 
         return transactionDataBinding.root
-    }
-
-    private fun showSnackbar(rootView: View, color: Int, message: String) {
-        Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT)
-            .setBackgroundTint(color)
-            .setActionTextColor(Color.BLACK)
-            .setAction("Close") {}
-            .show()
     }
 }

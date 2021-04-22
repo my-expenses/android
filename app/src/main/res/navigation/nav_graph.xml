@@ -29,5 +29,9 @@
         android:id="@+id/transactionDataFragment"
         android:name="com.motawfik.expenses.ui.TransactionDataFragment"
         android:label="Transaction Data" />
+    <fragment
+        android:id="@+id/categoriesFragment"
+        android:name="com.motawfik.expenses.ui.CategoriesFragment"
+        android:label="Categories" />
 
 </navigation>

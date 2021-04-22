@@ -29,4 +29,20 @@ class CategoriesRepo(val context: Context) {
         return categoriesDao.getAll()
     }
 
+
+    suspend fun deleteCategory(
+        categoryID: Int,
+        deleteStatus: MutableLiveData<CATEGORIES_API_STATUS>
+    ) {
+        deleteStatus.postValue(CATEGORIES_API_STATUS.LOADING)
+        try {
+            CategoriesApi.retrofitService.deleteCategory(categoryID).await()
+            categoriesDao.deleteByID(categoryID)
+            deleteStatus.postValue(CATEGORIES_API_STATUS.DONE)
+        } catch(t: Throwable) {
+            t.printStackTrace()
+            deleteStatus.postValue(CATEGORIES_API_STATUS.ERROR)
+        }
+
+    }
 }

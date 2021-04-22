@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.motawfik.expenses.databinding.UsersLoginFragmentBinding
 import com.motawfik.expenses.repos.TokenRepository
+import com.motawfik.expenses.utils.showErrorSnackbar
 import com.motawfik.expenses.viewmodel.LOGIN_STATUS
 import com.motawfik.expenses.viewmodel.UsersLoginViewModel
 import org.koin.java.KoinJavaComponent
@@ -34,15 +35,15 @@ class UsersLoginFragment : Fragment() {
                     loginViewModel.resetLoginStatus()
                 }
                 LOGIN_STATUS.INVALID_CREDENTIALS -> { // if invalid credentials
-                    showSnackbar(loginBinding.root, "Invalid Credentials")
+                    showErrorSnackbar(loginBinding.root, "Invalid Credentials")
                     loginViewModel.resetLoginStatus()
                 }
                 LOGIN_STATUS.INTERNAL_ERROR -> { // if internal server error
-                    showSnackbar(loginBinding.root, "Internal Server Error")
+                    showErrorSnackbar(loginBinding.root, "Internal Server Error")
                     loginViewModel.resetLoginStatus()
                 }
                 LOGIN_STATUS.UNKNOWN_ERROR -> { // if another unknown error
-                    showSnackbar(loginBinding.root, "Unknown Error Occurred")
+                    showErrorSnackbar(loginBinding.root, "Unknown Error Occurred")
                     loginViewModel.resetLoginStatus()
                 }
                 else -> {}
@@ -58,13 +59,5 @@ class UsersLoginFragment : Fragment() {
         })
 
         return loginBinding.root
-    }
-
-    private fun showSnackbar(rootView: View, message: String) {
-        Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT)
-            .setBackgroundTint(Color.RED)
-            .setActionTextColor(Color.BLACK)
-            .setAction("Close") {}
-            .show()
     }
 }

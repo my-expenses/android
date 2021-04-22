@@ -91,6 +91,10 @@ object TransactionsApi {
 interface CategoriesApiService {
     @GET("/auth/categories")
     fun getCategories(): Deferred<CategoriesResponse>
+
+    @DELETE("/auth/categories/{categoryID}")
+    fun deleteCategory(@Path("categoryID") categoryID: Int):
+            Deferred<Response<Void>>
 }
 
 object CategoriesApi {

@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.transactionsFragment,
                 R.id.usersLoginFragment,
+                R.id.categoriesFragment,
             ), binding.drawerLayout
         )
         setupActionBarWithNavController(navController!!, appBarConfiguration!!)
