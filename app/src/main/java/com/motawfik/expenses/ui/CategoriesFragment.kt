@@ -93,6 +93,14 @@ class CategoriesFragment : Fragment() {
             }
         })
 
+        categoriesViewModel.addedToDBStatus.observe(viewLifecycleOwner, {
+            it?.let {
+                if (it == CATEGORIES_API_STATUS.LOADING) {
+                    categoriesBinding.swipeRefresh.isRefreshing = true
+                }
+            }
+        })
+
         categoriesViewModel.categoriesWithGrouping.observe(viewLifecycleOwner, {
             Log.d("PAIR_CHANGED", "SOMETHING CHANGED")
             categoriesAdapter = CategoriesAdapter(categoryClickListener, it)
@@ -101,8 +109,13 @@ class CategoriesFragment : Fragment() {
                 val categories = categoriesList.toMutableList()
                 categories.add(Category(0, 0, "Uncategorized"))
                 categoriesAdapter.submitList(categories)
+                categoriesBinding.swipeRefresh.isRefreshing = false
             }
         })
+
+        categoriesBinding.swipeRefresh.setOnRefreshListener {
+            categoriesViewModel.addCategoriesToDB(transactionsViewModel.transactionsMonth.value!!)
+        }
 
         return categoriesBinding.root
     }
