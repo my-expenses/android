@@ -1,12 +1,10 @@
 package com.motawfik.expenses.network
 
+import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.motawfik.expenses.BuildConfig
-import com.motawfik.expenses.models.CategoriesResponse
-import com.motawfik.expenses.models.Transaction
+import com.motawfik.expenses.models.*
 import com.motawfik.expenses.repos.TokenRepository
-import com.motawfik.expenses.models.TransactionResponse
-import com.motawfik.expenses.models.TransactionsResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
@@ -15,6 +13,7 @@ import okhttp3.OkHttpClient
 import org.koin.java.KoinJavaComponent.inject
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
 import java.util.*
@@ -30,6 +29,7 @@ private val httpClient = OkHttpClient.Builder().addInterceptor {
 }
 
 private val moshi = Moshi.Builder()
+    .add(GroupedTransactionAdapter())
     .add(KotlinJsonAdapterFactory())
     .add(Date::class.java, Rfc3339DateJsonAdapter().nullSafe())
     .build()
@@ -95,6 +95,11 @@ interface CategoriesApiService {
     @DELETE("/auth/categories/{categoryID}")
     fun deleteCategory(@Path("categoryID") categoryID: Int):
             Deferred<Response<Void>>
+
+    @GET("/auth/grouped-transactions")
+    fun getGroupedTransactions(
+        @Query("month") month: String,
+    ): Deferred<GroupedTransactionsResponse>
 }
 
 object CategoriesApi {

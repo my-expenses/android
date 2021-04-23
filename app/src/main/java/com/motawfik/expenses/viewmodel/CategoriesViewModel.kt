@@ -1,13 +1,13 @@
 package com.motawfik.expenses.viewmodel
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
 import com.motawfik.expenses.models.Category
+import com.motawfik.expenses.models.GroupedTransaction
 import com.motawfik.expenses.repos.CategoriesRepo
 import kotlinx.coroutines.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 enum class CATEGORIES_API_STATUS { INITIAL, LOADING, ERROR, DONE }
 
@@ -31,9 +31,13 @@ class CategoriesViewModel(context: Context) : ViewModel() {
     val categories: LiveData<List<Category>>
         get() = _categories
 
-    init {
-        addCategoriesToDB()
+    private val _groupedTransactions = liveData {
+        emitSource(categoriesRepo.getCachedGroupedTransactions())
     }
+    val groupedTransaction: LiveData<List<GroupedTransaction>>
+        get() = _groupedTransactions
+
+    val categoriesWithGrouping = CategoryGroupedLiveData(_categories, _groupedTransactions)
 
     private val _addedToDBStatus = MutableLiveData(CATEGORIES_API_STATUS.INITIAL)
     val addedToDBStatus: LiveData<CATEGORIES_API_STATUS>
@@ -65,10 +69,12 @@ class CategoriesViewModel(context: Context) : ViewModel() {
         _addedToDBStatus.value = CATEGORIES_API_STATUS.INITIAL
     }
 
-    fun addCategoriesToDB() {
+    fun addCategoriesToDB(selectedMonth: Date) {
+        val formattedDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+            .format(selectedMonth)
         coroutineScope.launch {
             withContext(Dispatchers.IO) {
-                categoriesRepo.addCategoriesToDB(_addedToDBStatus)
+                categoriesRepo.addCategoriesToDB(_addedToDBStatus, formattedDate)
             }
         }
     }

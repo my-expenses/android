@@ -1,5 +1,6 @@
 package com.motawfik.expenses.repos
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.paging.*
 import androidx.room.withTransaction
@@ -63,6 +64,7 @@ class TransactionsRemoteMediator(
                 // Insert new users into database, which invalidates the
                 // current PagingData, allowing Paging to present the updates
                 // in the DB.
+                Log.d("TRANSACTIONS", response.toString())
                 database.transactionDao().insertAll(response.transactions)
             }
 

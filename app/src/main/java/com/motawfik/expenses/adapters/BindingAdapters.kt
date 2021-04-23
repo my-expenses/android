@@ -27,6 +27,24 @@ fun TextView.bindAmountText(amount: Int, type: Boolean) {
     }
 }
 
+@BindingAdapter("totalSpent")
+fun TextView.bindTotalSpent(amount: Int) {
+    // to display (plus) or (minus) & change text color signs before amount
+    when {
+        amount > 0 -> {
+            text = context.getString(R.string.positive_amount, amount)
+            setTextColor(Color.GREEN)
+        }
+        amount < 0 -> {
+            text = amount.toString()
+            setTextColor(Color.RED)
+        }
+        else -> {
+            text = amount.toString()
+        }
+    }
+}
+
 @BindingAdapter("date")
 fun TextView.bindDate(date: Date) {
     val parser = SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy", Locale.US)

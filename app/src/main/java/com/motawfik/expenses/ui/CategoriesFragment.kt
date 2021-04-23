@@ -7,19 +7,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.motawfik.expenses.adapters.CategoriesAdapter
 import com.motawfik.expenses.adapters.CategoryListener
 import com.motawfik.expenses.databinding.FragmentCategoriesBinding
+import com.motawfik.expenses.models.Category
 import com.motawfik.expenses.utils.showErrorSnackbar
 import com.motawfik.expenses.utils.showSuccessSnackbar
 import com.motawfik.expenses.viewmodel.CATEGORIES_API_STATUS
 import com.motawfik.expenses.viewmodel.CategoriesViewModel
+import com.motawfik.expenses.viewmodel.TransactionsViewModel
 import com.motawfik.expenses.viewmodelfactory.ViewModelFactory
 
 class CategoriesFragment : Fragment() {
     private lateinit var categoriesViewModel: CategoriesViewModel
+    private lateinit var transactionsViewModel: TransactionsViewModel
+    private lateinit var categoriesAdapter: CategoriesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val app = requireNotNull(this.activity).application
@@ -29,6 +32,12 @@ class CategoriesFragment : Fragment() {
                 requireActivity(),
                 viewModelFactory
             ).get(CategoriesViewModel::class.java)
+
+        transactionsViewModel =
+            ViewModelProvider(
+                requireActivity(),
+                viewModelFactory
+            ).get(TransactionsViewModel::class.java)
 
         super.onCreate(savedInstanceState)
     }
@@ -41,13 +50,16 @@ class CategoriesFragment : Fragment() {
         val categoriesBinding = FragmentCategoriesBinding.inflate(inflater)
         categoriesBinding.viewModel = categoriesViewModel
 
+        categoriesBinding.lifecycleOwner = this
         val categoryClickListener = CategoryListener {
             categoriesViewModel.setCategoryToDelete(it)
         }
 
-        val categoriesAdapter = CategoriesAdapter(categoryClickListener)
-        categoriesBinding.categoriesList.adapter = categoriesAdapter
-
+        transactionsViewModel.transactionsMonth.observe(viewLifecycleOwner, {
+            it?.let {
+                categoriesViewModel.addCategoriesToDB(it)
+            }
+        })
 
         categoriesViewModel.deletingCategory.observe(viewLifecycleOwner, {
             it?.let {
@@ -81,9 +93,14 @@ class CategoriesFragment : Fragment() {
             }
         })
 
-        categoriesViewModel.categories.observe(viewLifecycleOwner, {
-            it?.let {
-                categoriesAdapter.submitList(it)
+        categoriesViewModel.categoriesWithGrouping.observe(viewLifecycleOwner, {
+            Log.d("PAIR_CHANGED", "SOMETHING CHANGED")
+            categoriesAdapter = CategoriesAdapter(categoryClickListener, it)
+            categoriesBinding.categoriesList.adapter = categoriesAdapter
+            it.first?.let {  categoriesList ->
+                val categories = categoriesList.toMutableList()
+                categories.add(Category(0, 0, "Uncategorized"))
+                categoriesAdapter.submitList(categories)
             }
         })
 

@@ -84,6 +84,7 @@ dependencies {
     implementation "org.koin:koin-android-viewmodel:$version_koin"
 
     implementation 'com.google.code.gson:gson:2.8.6'
+    implementation "com.squareup.retrofit2:converter-gson:$version_retrofit"
 
     implementation "androidx.paging:paging-runtime-ktx:$version_paging"
     // Jetpack Compose Integration

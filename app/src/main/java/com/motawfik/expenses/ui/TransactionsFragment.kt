@@ -1,6 +1,7 @@
 package com.motawfik.expenses.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -46,14 +47,21 @@ class TransactionsFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    @ExperimentalPagingApi
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         transactionsBinding = FragmentTransactionsBinding.inflate(inflater)
+        transactionsBinding.lifecycleOwner = this
         transactionsBinding.viewModel = transactionsViewModel
+
+        return transactionsBinding.root
+    }
+
+
+    @ExperimentalPagingApi
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val transactionClickListener = TransactionListener(
             {
@@ -65,6 +73,24 @@ class TransactionsFragment : Fragment() {
                 transactionsViewModel.setTransactionToDelete(it)
             }
         )
+
+
+//        categoriesViewModel.categories.observe(viewLifecycleOwner, {
+//            it?.let {
+//                // must add observer to listen for the changes and pass it to the
+//                // transactionsAdapter to display the categories
+//                if (categoriesViewModel.addedToDBStatus.value == CATEGORIES_API_STATUS.DONE) {
+//                    categoriesViewModel.resetAddedToDBStatus()
+//                }
+//            }
+//        })
+
+        categoriesViewModel.categoriesWithGrouping.observe(viewLifecycleOwner, {
+            it?.let {
+                Log.d("PAIR_CHANGED", "SOMETHING CHANGED")
+            }
+        })
+
         transactionsPagingAdapter = TransactionsAdapter(transactionClickListener,
             categoriesViewModel.categories)
 
@@ -76,15 +102,7 @@ class TransactionsFragment : Fragment() {
             }
         }
 
-        categoriesViewModel.categories.observe(viewLifecycleOwner, {
-            it?.let {
-                // must add observer to listen for the changes and pass it to the
-                // transactionsAdapter to display the categories
-                if (categoriesViewModel.addedToDBStatus.value == CATEGORIES_API_STATUS.DONE) {
-                    categoriesViewModel.resetAddedToDBStatus()
-                }
-            }
-        })
+
 
         transactionsViewModel.deletingTransaction.observe(viewLifecycleOwner, {
             // the user clicked on the delete button
@@ -128,14 +146,6 @@ class TransactionsFragment : Fragment() {
             }
         })
 
-//        transactionsViewModel.categoriesStatus.observe(viewLifecycleOwner, {
-//            it?.let {
-//                if (it == CATEGORIES_API_STATUS.DONE) {
-//                    transactionsViewModel.resetCategoriesStatus()
-//                }
-//            }
-//        })
-
         // when plus button is pressed, navigate to the data fragment with an empty transaction
         transactionsViewModel.navigateToDataFragment.observe(viewLifecycleOwner, {
             if (it) {
@@ -150,7 +160,9 @@ class TransactionsFragment : Fragment() {
         transactionsBinding.swipeRefresh.setOnRefreshListener {
             transactionsPagingAdapter.refresh()
             transactionsBinding.transactionsList.scrollToPosition(0)
-            categoriesViewModel.addCategoriesToDB()
+            categoriesViewModel.addCategoriesToDB(
+                transactionsViewModel.transactionsMonth.value!!
+            )
         }
 
         // ge transactions when the user clicks on the refresh button in the toolbar
@@ -158,7 +170,9 @@ class TransactionsFragment : Fragment() {
             it?.let {
                 transactionsPagingAdapter.refresh()
                 transactionsBinding.transactionsList.scrollToPosition(0)
-                categoriesViewModel.addCategoriesToDB()
+                categoriesViewModel.addCategoriesToDB(
+                    transactionsViewModel.transactionsMonth.value!!
+                )
             }
             true
         }
@@ -167,7 +181,8 @@ class TransactionsFragment : Fragment() {
             transactionsPagingAdapter.refresh()
         }
 
-        return transactionsBinding.root
+
+        transactionsBinding.executePendingBindings()
     }
 
     private fun initAdapter(transactionsPagingAdapter: TransactionsAdapter) {

@@ -4,19 +4,29 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.motawfik.expenses.models.Category
+import com.motawfik.expenses.models.GroupedTransaction
 import com.motawfik.expenses.network.CategoriesApi
 import com.motawfik.expenses.viewmodel.CATEGORIES_API_STATUS
 
 class CategoriesRepo(val context: Context) {
     private val categoriesDao = TransactionsDatabase.getINSTANCE(context).categoriesDao()
+    private val groupedTransactionsDao =
+        TransactionsDatabase.getINSTANCE(context).groupedTransactionsDao()
 
-    suspend fun addCategoriesToDB(addedToDBStatus: MutableLiveData<CATEGORIES_API_STATUS>) {
+    suspend fun addCategoriesToDB(
+        addedToDBStatus: MutableLiveData<CATEGORIES_API_STATUS>,
+        selectedMonth: String
+    ) {
         addedToDBStatus.postValue(CATEGORIES_API_STATUS.LOADING)
         categoriesDao.deleteAll() // delete all the categories
+        groupedTransactionsDao.deleteAll() // delete all the grouped transactions
         try {
             // get all the categories from the server
             val categories = CategoriesApi.retrofitService.getCategories().await()
+            val groupedTransactions =
+                CategoriesApi.retrofitService.getGroupedTransactions(selectedMonth).await()
             // insert the fetched categories to the local DB
+            groupedTransactionsDao.insertAll(groupedTransactions.groupedTransactions)
             categoriesDao.insertAll(categories.categories)
             addedToDBStatus.postValue(CATEGORIES_API_STATUS.DONE)
         } catch (t: Throwable) {
@@ -27,6 +37,10 @@ class CategoriesRepo(val context: Context) {
 
     fun getCachedCategories(): LiveData<List<Category>> {
         return categoriesDao.getAll()
+    }
+
+    fun getCachedGroupedTransactions(): LiveData<List<GroupedTransaction>> {
+        return groupedTransactionsDao.getAll()
     }
 
 

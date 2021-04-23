@@ -6,15 +6,18 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.motawfik.expenses.dao.CategoriesDao
+import com.motawfik.expenses.dao.GroupedTransactionsDao
 import com.motawfik.expenses.models.Category
 import com.motawfik.expenses.dao.TransactionDao
+import com.motawfik.expenses.models.GroupedTransaction
 import com.motawfik.expenses.models.Transaction
 
-@Database(entities = [Transaction::class, Category::class], version = 1)
+@Database(entities = [Transaction::class, Category::class, GroupedTransaction::class], version = 1)
 @TypeConverters(DateConverter::class)
-abstract class TransactionsDatabase: RoomDatabase() {
+abstract class TransactionsDatabase : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao
     abstract fun categoriesDao(): CategoriesDao
+    abstract fun groupedTransactionsDao(): GroupedTransactionsDao
 
     companion object {
         private lateinit var INSTANCE: TransactionsDatabase

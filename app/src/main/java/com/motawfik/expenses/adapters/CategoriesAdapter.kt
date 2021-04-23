@@ -1,5 +1,6 @@
 package com.motawfik.expenses.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -7,9 +8,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.motawfik.expenses.databinding.ListItemCategoryBinding
 import com.motawfik.expenses.models.Category
+import com.motawfik.expenses.models.GroupedTransaction
 
 class CategoriesAdapter(
     private val clickListener: CategoryListener,
+    private val groupedTransaction: Pair<List<Category>?, List<GroupedTransaction>?>
 ) :
     ListAdapter<Category, CategoriesAdapter.MyViewHolder>(CategoryDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -18,7 +21,8 @@ class CategoriesAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item, clickListener)
+        Log.d("GROUPED_T", groupedTransaction.toString())
+        holder.bind(item, clickListener, groupedTransaction.second)
     }
 
 
@@ -27,9 +31,13 @@ class CategoriesAdapter(
         fun bind(
             item: Category,
             clickListener: CategoryListener,
+            groupedTransaction: List<GroupedTransaction>?,
         ) {
             binding.category = item
             binding.clickListener = clickListener
+            binding.groupedTransaction = groupedTransaction?.find {
+                it.categoryID == item.ID
+            }
             binding.executePendingBindings()
         }
 
