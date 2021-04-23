@@ -23,4 +23,7 @@ interface GroupedTransactionsDao {
 
     @Query("DELETE FROM grouped_transactions WHERE categoryID = :categoryID")
     fun deleteByCategoryID(categoryID: Int)
+
+    @Query("UPDATE grouped_transactions SET total = total + (SELECT total FROM grouped_transactions WHERE categoryID = :categoryID)")
+    fun addAmountToUncategorized(categoryID: Int)
 }

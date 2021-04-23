@@ -15,6 +15,15 @@ import com.motawfik.expenses.models.Category
 import java.text.SimpleDateFormat
 import java.util.*
 
+@BindingAdapter("amountGainedSpent")
+fun TextView.bindAmountGainedSpent(amount: Int) {
+    text = when {
+        amount > 0 -> context.getString(R.string.amount_gained)
+        amount < 0 -> context.getString(R.string.amount_spent)
+        else -> context.getString(R.string.zero_difference)
+    }
+}
+
 @BindingAdapter(value = ["amount", "type"])
 fun TextView.bindAmountText(amount: Int, type: Boolean) {
      // to display (plus) or (minus) & change text color signs before amount

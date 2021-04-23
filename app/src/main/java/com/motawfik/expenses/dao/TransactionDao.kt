@@ -21,4 +21,9 @@ interface TransactionDao {
 
     @Query("DELETE FROM transactions")
     suspend fun deleteAll()
+
+    // this function to be executed when a category is deleted
+    // so we need to uncategorize all the transactions in this category
+    @Query("UPDATE transactions SET categoryID = null WHERE categoryID = :categoryID")
+    fun setNullCategory(categoryID: Int)
 }

@@ -12,6 +12,7 @@ class CategoriesRepo(val context: Context) {
     private val categoriesDao = TransactionsDatabase.getINSTANCE(context).categoriesDao()
     private val groupedTransactionsDao =
         TransactionsDatabase.getINSTANCE(context).groupedTransactionsDao()
+    private val transactionsDao = TransactionsDatabase.getINSTANCE(context).transactionDao()
 
     suspend fun addCategoriesToDB(
         addedToDBStatus: MutableLiveData<CATEGORIES_API_STATUS>,
@@ -52,6 +53,9 @@ class CategoriesRepo(val context: Context) {
         try {
             CategoriesApi.retrofitService.deleteCategory(categoryID).await()
             categoriesDao.deleteByID(categoryID)
+            transactionsDao.setNullCategory(categoryID)
+            groupedTransactionsDao.addAmountToUncategorized(categoryID)
+            groupedTransactionsDao.deleteByCategoryID(categoryID)
             deleteStatus.postValue(CATEGORIES_API_STATUS.DONE)
         } catch(t: Throwable) {
             t.printStackTrace()

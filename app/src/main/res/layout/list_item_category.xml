@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="android.view.View"/>
         <variable
             name="category"
             type="com.motawfik.expenses.models.Category" />
@@ -38,7 +38,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -50,9 +51,6 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:paddingBottom="16dp"
                         android:text="@{category.title}"
                         android:textAppearance="?attr/textAppearanceHeadline6"
                         app:layout_constraintStart_toStartOf="parent"
@@ -67,10 +65,20 @@
                         tools:text="+300" />
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:textColor="?android:attr/textColorSecondary"
+                    tools:text="Amount gained from this category"
+                    app:amountGainedSpent="@{groupedTransaction.total}" />
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
+                    android:visibility="@{category.ID == 0 ? View.GONE : View.VISIBLE}"
                     android:orientation="horizontal">
 
                     <com.google.android.material.button.MaterialButton
