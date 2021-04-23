@@ -10,8 +10,8 @@ interface TransactionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(transactions: List<Transaction>)
 
-    @Query("SELECT * FROM transactions WHERE date BETWEEN :firstOfMonth AND :lastOfMonth ORDER BY date DESC")
-    fun pagingSource(firstOfMonth: Date, lastOfMonth: Date): PagingSource<Int, Transaction>
+    @Query("SELECT * FROM transactions ORDER BY date DESC")
+    fun pagingSource(): PagingSource<Int, Transaction>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdate(vararg transaction: Transaction)

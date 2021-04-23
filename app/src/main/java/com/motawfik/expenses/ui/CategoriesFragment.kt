@@ -85,10 +85,10 @@ class CategoriesFragment : Fragment() {
             it?.let {
                 if (it == CATEGORIES_API_STATUS.DONE) {
                     showSuccessSnackbar(categoriesBinding.root, "Category deleted successfully")
-                    categoriesViewModel.resetAddedToDBStatus()
+                    categoriesViewModel.resetDeleteStatus()
                 } else if (it == CATEGORIES_API_STATUS.ERROR) {
                     showErrorSnackbar(categoriesBinding.root, "Error deleting category")
-                    categoriesViewModel.resetAddedToDBStatus()
+                    categoriesViewModel.resetDeleteStatus()
                 }
             }
         })

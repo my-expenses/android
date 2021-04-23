@@ -59,30 +59,6 @@ class TransactionsViewModel(context: Context) : ViewModel() {
     private val _transactionsMonth = MutableLiveData(Date())
     val transactionsMonth: LiveData<Date>
         get() = _transactionsMonth
-    private val _transactionsStartOfMonth: Date
-    get() {
-        val calendar = Calendar.getInstance()
-        calendar.time =_transactionsMonth.value!!
-        // to get the first minute in the month (start of month)
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH))
-        calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMinimum(Calendar.HOUR_OF_DAY))
-        calendar.set(Calendar.MINUTE, calendar.getActualMinimum(Calendar.MINUTE))
-        calendar.set(Calendar.SECOND, calendar.getActualMinimum(Calendar.SECOND))
-        calendar.set(Calendar.MILLISECOND, calendar.getActualMinimum(Calendar.MILLISECOND))
-        return calendar.time
-    }
-    private val _transactionsEndOfMonth: Date
-        get() {
-            val calendar = Calendar.getInstance()
-            calendar.time =_transactionsMonth.value!!
-            // tp get the last minute in the month (end of month)
-            calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
-            calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMaximum(Calendar.HOUR_OF_DAY))
-            calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE))
-            calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND))
-            calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND))
-            return calendar.time
-        }
 
     val strTransactionsMonth: String
         get() {
@@ -101,9 +77,7 @@ class TransactionsViewModel(context: Context) : ViewModel() {
             _database,
             transactionsMonth)
     ) {
-        _database.transactionDao().pagingSource(
-            _transactionsStartOfMonth, _transactionsEndOfMonth
-        )
+        _database.transactionDao().pagingSource()
     }.flow.cachedIn(viewModelScope)
 
     fun resetSaveStatus() {

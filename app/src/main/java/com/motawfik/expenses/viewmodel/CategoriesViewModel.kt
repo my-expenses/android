@@ -69,6 +69,10 @@ class CategoriesViewModel(context: Context) : ViewModel() {
         _addedToDBStatus.value = CATEGORIES_API_STATUS.INITIAL
     }
 
+    fun resetDeleteStatus() {
+        _deleteStatus.value = CATEGORIES_API_STATUS.INITIAL
+    }
+
     fun addCategoriesToDB(selectedMonth: Date) {
         val formattedDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
             .format(selectedMonth)

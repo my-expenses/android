@@ -74,17 +74,6 @@ class TransactionsFragment : Fragment() {
             }
         )
 
-
-//        categoriesViewModel.categories.observe(viewLifecycleOwner, {
-//            it?.let {
-//                // must add observer to listen for the changes and pass it to the
-//                // transactionsAdapter to display the categories
-//                if (categoriesViewModel.addedToDBStatus.value == CATEGORIES_API_STATUS.DONE) {
-//                    categoriesViewModel.resetAddedToDBStatus()
-//                }
-//            }
-//        })
-
         categoriesViewModel.categoriesWithGrouping.observe(viewLifecycleOwner, {
             it?.let {
                 Log.d("PAIR_CHANGED", "SOMETHING CHANGED")
