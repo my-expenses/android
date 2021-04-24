@@ -1,6 +1,5 @@
 package com.motawfik.expenses.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,36 +7,32 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.motawfik.expenses.databinding.ListItemCategoryBinding
 import com.motawfik.expenses.models.Category
-import com.motawfik.expenses.models.GroupedTransaction
+import com.motawfik.expenses.models.CategoryWithGroupedTransactions
 
 class CategoriesAdapter(
     private val clickListener: CategoryListener,
-    private val groupedTransaction: Pair<List<Category>?, List<GroupedTransaction>?>
 ) :
-    ListAdapter<Category, CategoriesAdapter.MyViewHolder>(CategoryDiffCallback()) {
+    ListAdapter<CategoryWithGroupedTransactions, CategoriesAdapter.MyViewHolder>(CategoryDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = getItem(position)
-        Log.d("GROUPED_T", groupedTransaction.toString())
-        holder.bind(item, clickListener, groupedTransaction.second)
+        holder.bind(item, clickListener)
     }
 
 
     class MyViewHolder private constructor(private val binding: ListItemCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            item: Category,
+            item: CategoryWithGroupedTransactions,
             clickListener: CategoryListener,
-            groupedTransaction: List<GroupedTransaction>?,
         ) {
-            binding.category = item
+            // if the category is null, then bind it with `Uncategorized` else bind it with the category
+            binding.category = item.category ?: Category(0, 0, "Uncategorized")
             binding.clickListener = clickListener
-            binding.groupedTransaction = groupedTransaction?.find {
-                it.categoryID == item.ID
-            }
+            binding.groupedTransaction = item.groupedTransaction
             binding.executePendingBindings()
         }
 
@@ -52,12 +47,12 @@ class CategoriesAdapter(
 }
 
 
-class CategoryDiffCallback : DiffUtil.ItemCallback<Category>() {
-    override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
-        return oldItem.ID == newItem.ID
+class CategoryDiffCallback : DiffUtil.ItemCallback<CategoryWithGroupedTransactions>() {
+    override fun areItemsTheSame(oldItem: CategoryWithGroupedTransactions, newItem: CategoryWithGroupedTransactions): Boolean {
+        return oldItem.category?.ID == newItem.category?.ID
     }
 
-    override fun areContentsTheSame(oldItem: Category, newItem: Category): Boolean {
+    override fun areContentsTheSame(oldItem: CategoryWithGroupedTransactions, newItem: CategoryWithGroupedTransactions): Boolean {
         return oldItem == newItem
     }
 

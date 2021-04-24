@@ -3,7 +3,7 @@ package com.motawfik.expenses.viewmodel
 import android.content.Context
 import androidx.lifecycle.*
 import com.motawfik.expenses.models.Category
-import com.motawfik.expenses.models.GroupedTransaction
+import com.motawfik.expenses.models.CategoryWithGroupedTransactions
 import com.motawfik.expenses.repos.CategoriesRepo
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
@@ -34,10 +34,8 @@ class CategoriesViewModel(context: Context) : ViewModel() {
     private val _groupedTransactions = liveData {
         emitSource(categoriesRepo.getCachedGroupedTransactions())
     }
-    val groupedTransaction: LiveData<List<GroupedTransaction>>
+    val groupedTransactions: LiveData<List<CategoryWithGroupedTransactions>>
         get() = _groupedTransactions
-
-    val categoriesWithGrouping = CategoryGroupedLiveData(_categories, _groupedTransactions)
 
     private val _addedToDBStatus = MutableLiveData(CATEGORIES_API_STATUS.INITIAL)
     val addedToDBStatus: LiveData<CATEGORIES_API_STATUS>

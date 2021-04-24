@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.motawfik.expenses.models.Category
-import com.motawfik.expenses.models.GroupedTransaction
+import com.motawfik.expenses.models.CategoryWithGroupedTransactions
 import com.motawfik.expenses.network.CategoriesApi
 import com.motawfik.expenses.viewmodel.CATEGORIES_API_STATUS
 
@@ -40,7 +40,7 @@ class CategoriesRepo(val context: Context) {
         return categoriesDao.getAll()
     }
 
-    fun getCachedGroupedTransactions(): LiveData<List<GroupedTransaction>> {
+    fun getCachedGroupedTransactions(): LiveData<List<CategoryWithGroupedTransactions>> {
         return groupedTransactionsDao.getAll()
     }
 

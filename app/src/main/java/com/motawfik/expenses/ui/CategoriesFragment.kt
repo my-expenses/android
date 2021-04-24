@@ -11,7 +11,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.motawfik.expenses.adapters.CategoriesAdapter
 import com.motawfik.expenses.adapters.CategoryListener
 import com.motawfik.expenses.databinding.FragmentCategoriesBinding
-import com.motawfik.expenses.models.Category
 import com.motawfik.expenses.utils.showErrorSnackbar
 import com.motawfik.expenses.utils.showSuccessSnackbar
 import com.motawfik.expenses.viewmodel.CATEGORIES_API_STATUS
@@ -54,6 +53,9 @@ class CategoriesFragment : Fragment() {
         val categoryClickListener = CategoryListener {
             categoriesViewModel.setCategoryToDelete(it)
         }
+
+        categoriesAdapter = CategoriesAdapter(categoryClickListener)
+        categoriesBinding.categoriesList.adapter = categoriesAdapter
 
         transactionsViewModel.transactionsMonth.observe(viewLifecycleOwner, {
             it?.let {
@@ -101,14 +103,10 @@ class CategoriesFragment : Fragment() {
             }
         })
 
-        categoriesViewModel.categoriesWithGrouping.observe(viewLifecycleOwner, {
-            Log.d("PAIR_CHANGED", "SOMETHING CHANGED")
-            categoriesAdapter = CategoriesAdapter(categoryClickListener, it)
-            categoriesBinding.categoriesList.adapter = categoriesAdapter
-            it.first?.let {  categoriesList ->
-                val categories = categoriesList.toMutableList()
-                categories.add(Category(0, 0, "Uncategorized"))
-                categoriesAdapter.submitList(categories)
+        categoriesViewModel.groupedTransactions.observe(viewLifecycleOwner, {
+            it?.let {
+                Log.d("groupedTransaction", "SOMETHING CHANGED")
+                categoriesAdapter.submitList(it)
                 categoriesBinding.swipeRefresh.isRefreshing = false
             }
         })

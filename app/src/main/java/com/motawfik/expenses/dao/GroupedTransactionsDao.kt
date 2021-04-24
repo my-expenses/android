@@ -1,16 +1,15 @@
 package com.motawfik.expenses.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.motawfik.expenses.models.GroupedTransaction
+import com.motawfik.expenses.models.CategoryWithGroupedTransactions
 
 @Dao
 interface GroupedTransactionsDao {
+    @Transaction
     @Query("SELECT * FROM grouped_transactions")
-    fun getAll(): LiveData<List<GroupedTransaction>>
+    fun getAll(): LiveData<List<CategoryWithGroupedTransactions>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(groupedTransactions: List<GroupedTransaction>)
