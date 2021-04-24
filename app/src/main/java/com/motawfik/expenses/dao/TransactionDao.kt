@@ -3,15 +3,19 @@ package com.motawfik.expenses.dao
 import androidx.paging.PagingSource
 import androidx.room.*
 import com.motawfik.expenses.models.Transaction
-import java.util.*
+import com.motawfik.expenses.models.TransactionWithCategory
 
 @Dao
 interface TransactionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(transactions: List<Transaction>)
 
-    @Query("SELECT * FROM transactions ORDER BY date DESC")
-    fun pagingSource(): PagingSource<Int, Transaction>
+    @Query("""
+        SELECT * FROM transactions
+        LEFT JOIN categories ON transactions.categoryID = categories.category_id
+        ORDER BY date DESC
+        """)
+    fun pagingSource(): PagingSource<Int, TransactionWithCategory>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdate(vararg transaction: Transaction)

@@ -15,10 +15,10 @@ interface CategoriesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrUpdate(vararg category: Category)
 
-    @Query("SELECT * FROM categories ORDER BY ID")
+    @Query("SELECT * FROM categories ORDER BY category_id")
     fun getAll(): LiveData<List<Category>>
 
-    @Query("DELETE FROM categories WHERE id = :categoryID")
+    @Query("DELETE FROM categories WHERE category_id = :categoryID")
     fun deleteByID(categoryID: Int)
 
     @Query("DELETE FROM categories")

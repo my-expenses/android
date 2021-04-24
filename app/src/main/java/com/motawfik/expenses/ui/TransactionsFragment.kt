@@ -74,15 +74,7 @@ class TransactionsFragment : Fragment() {
             }
         )
 
-        categoriesViewModel.categoriesWithGrouping.observe(viewLifecycleOwner, {
-            it?.let {
-                Log.d("PAIR_CHANGED", "SOMETHING CHANGED")
-            }
-        })
-
-        transactionsPagingAdapter = TransactionsAdapter(transactionClickListener,
-            categoriesViewModel.categories)
-
+        transactionsPagingAdapter = TransactionsAdapter(transactionClickListener)
         initAdapter(transactionsPagingAdapter)
 
         lifecycleScope.launch {

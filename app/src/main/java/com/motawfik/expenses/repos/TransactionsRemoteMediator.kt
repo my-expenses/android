@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.*
 import androidx.room.withTransaction
 import com.motawfik.expenses.models.Transaction
+import com.motawfik.expenses.models.TransactionWithCategory
 import com.motawfik.expenses.network.TransactionsApiService
 import retrofit2.HttpException
 import java.io.IOException
@@ -16,10 +17,10 @@ class TransactionsRemoteMediator(
     private val backend: TransactionsApiService,
     private val database: TransactionsDatabase,
     private val selectedMonth: LiveData<Date>,
-) : RemoteMediator<Int, Transaction>() {
+) : RemoteMediator<Int, TransactionWithCategory>() {
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, Transaction>
+        state: PagingState<Int, TransactionWithCategory>
     ): MediatorResult {
         val formattedDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
             .format(selectedMonth.value!!)

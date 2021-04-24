@@ -1,5 +1,6 @@
 package com.motawfik.expenses.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
@@ -9,11 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.motawfik.expenses.databinding.ListItemTransactionBinding
 import com.motawfik.expenses.models.Category
 import com.motawfik.expenses.models.Transaction
+import com.motawfik.expenses.models.TransactionWithCategory
 
 class TransactionsAdapter(
     private val clickListener: TransactionListener,
-    private val categories: LiveData<List<Category>>,
-) : PagingDataAdapter<Transaction, TransactionsAdapter.MyViewHolder>(PostDiffCallback()) {
+) : PagingDataAdapter<TransactionWithCategory, TransactionsAdapter.MyViewHolder>(PostDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder.from(parent)
@@ -21,19 +22,18 @@ class TransactionsAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item, clickListener, categories)
+        holder.bind(item, clickListener)
     }
 
     class MyViewHolder private constructor(private val binding: ListItemTransactionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            item: Transaction?,
+            item: TransactionWithCategory?,
             clickListener: TransactionListener,
-            categories: LiveData<List<Category>>
         ) {
-            binding.transaction = item
+            binding.transaction = item?.transaction
             binding.clickListener = clickListener
-            binding.category = categories.value?.find { it.ID == item?.categoryID }
+            binding.category = item?.category
             binding.executePendingBindings()
         }
 
@@ -47,12 +47,12 @@ class TransactionsAdapter(
     }
 }
 
-class PostDiffCallback : DiffUtil.ItemCallback<Transaction>() {
-    override fun areItemsTheSame(oldItem: Transaction, newItem: Transaction): Boolean {
-        return oldItem.ID == newItem.ID
+class PostDiffCallback : DiffUtil.ItemCallback<TransactionWithCategory>() {
+    override fun areItemsTheSame(oldItem: TransactionWithCategory, newItem: TransactionWithCategory): Boolean {
+        return oldItem.transaction.ID == newItem.transaction.ID
     }
 
-    override fun areContentsTheSame(oldItem: Transaction, newItem: Transaction): Boolean {
+    override fun areContentsTheSame(oldItem: TransactionWithCategory, newItem: TransactionWithCategory): Boolean {
         return oldItem == newItem
     }
 
