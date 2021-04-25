@@ -1,5 +1,6 @@
 package com.motawfik.expenses.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -59,8 +60,12 @@ class CategoryDiffCallback : DiffUtil.ItemCallback<CategoryWithGroupedTransactio
 }
 
 class CategoryListener(
+    val clickListener: (category: Category) -> Unit,
     val deleteListener: (categoryID: Int) -> Unit
 ) {
+    fun onClick(category: Category) {
+        clickListener(category)
+    }
     fun onDelete(categoryID: Int) {
         deleteListener(categoryID)
     }

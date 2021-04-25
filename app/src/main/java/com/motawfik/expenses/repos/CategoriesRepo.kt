@@ -44,6 +44,17 @@ class CategoriesRepo(val context: Context) {
         return groupedTransactionsDao.getAll()
     }
 
+    suspend fun updateCategory(category: Category, updateStatus: MutableLiveData<CATEGORIES_API_STATUS>) {
+        updateStatus.postValue(CATEGORIES_API_STATUS.LOADING)
+        try {
+            val response = CategoriesApi.retrofitService.updateCategory(category.ID, category).await()
+            categoriesDao.insertOrUpdate(response.category)
+            updateStatus.postValue(CATEGORIES_API_STATUS.DONE)
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            updateStatus.postValue(CATEGORIES_API_STATUS.ERROR)
+        }
+    }
 
     suspend fun deleteCategory(
         categoryID: Int,

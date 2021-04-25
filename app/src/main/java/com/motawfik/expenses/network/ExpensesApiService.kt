@@ -100,6 +100,13 @@ interface CategoriesApiService {
     fun getGroupedTransactions(
         @Query("month") month: String,
     ): Deferred<GroupedTransactionsResponse>
+
+    @PUT("/auth/categories/{categoryID}")
+    fun updateCategory(
+        @Path("categoryID") transactionID: Int,
+        @Body category: Category
+    ):
+            Deferred<CategoryResponse>
 }
 
 object CategoriesApi {

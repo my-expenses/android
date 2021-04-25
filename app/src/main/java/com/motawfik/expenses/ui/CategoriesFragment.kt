@@ -6,8 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.motawfik.expenses.adapters.CategoriesAdapter
 import com.motawfik.expenses.adapters.CategoryListener
 import com.motawfik.expenses.databinding.FragmentCategoriesBinding
@@ -50,9 +54,10 @@ class CategoriesFragment : Fragment() {
         categoriesBinding.viewModel = categoriesViewModel
 
         categoriesBinding.lifecycleOwner = this
-        val categoryClickListener = CategoryListener {
-            categoriesViewModel.setCategoryToDelete(it)
-        }
+        val categoryClickListener = CategoryListener(
+            { category -> categoriesViewModel.setCategoryToEdit(category) },
+            { categoryID -> categoriesViewModel.setCategoryToDelete(categoryID) }
+        )
 
         categoriesAdapter = CategoriesAdapter(categoryClickListener)
         categoriesBinding.categoriesList.adapter = categoriesAdapter
@@ -69,8 +74,10 @@ class CategoriesFragment : Fragment() {
                     // make sure by displaying a confirmation dialog
                     MaterialAlertDialogBuilder(requireContext())
                         .setTitle("Confirmation")
-                        .setMessage("Are you sure you want to delete this category?\n" +
-                                "All transactions belonging to this category will be uncategorized")
+                        .setMessage(
+                            "Are you sure you want to delete this category?\n" +
+                                    "All transactions belonging to this category will be uncategorized"
+                        )
                         .setNeutralButton("Cancel") { _, _ -> }
                         .setPositiveButton("Delete") { _, _ ->
                             categoriesViewModel.deleteCategory()
@@ -79,6 +86,67 @@ class CategoriesFragment : Fragment() {
                             categoriesViewModel.resetCategoryToDelete()
                         }
                         .show()
+                }
+            }
+        })
+
+        categoriesViewModel.updateStatus.observe(viewLifecycleOwner, {
+            it?.let {
+                if (it == CATEGORIES_API_STATUS.DONE) {
+                    showSuccessSnackbar(categoriesBinding.root, "Category updated successfully")
+                    categoriesViewModel.resetUpdateStatus()
+                } else if (it == CATEGORIES_API_STATUS.ERROR) {
+                    showErrorSnackbar(categoriesBinding.root, "Error occurred")
+                    categoriesViewModel.resetUpdateStatus()
+                }
+            }
+        })
+
+        categoriesViewModel.categoryToEdit.observe(viewLifecycleOwner, {
+            it?.let {
+                if (it.ID != 0) {
+                    val textInputLayout = TextInputLayout(requireContext())
+                    textInputLayout.isCounterEnabled = true
+                    textInputLayout.counterMaxLength = 30
+
+                    val textInputEditText = TextInputEditText(requireContext())
+                    textInputEditText.setText(it.title)
+                    textInputLayout.isErrorEnabled = true
+                    textInputLayout.addView(textInputEditText)
+
+                    val dialog = MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Category Title")
+                        .setView(textInputLayout)
+                        .setPositiveButton("Confirm") { _, _ ->
+                            categoriesViewModel.updateCategory(textInputEditText.text.toString())
+                        }
+                        .setNegativeButton("Cancel") { _, _ ->
+                            categoriesViewModel.resetCategoryToEdit()
+                        }
+                        .setOnDismissListener {
+                            categoriesViewModel.resetCategoryToEdit()
+                        }
+                        .create()
+                    dialog.show()
+
+                    textInputLayout.editText?.doAfterTextChanged { text ->
+                        text?.let { typedText ->
+                            when {
+                                typedText.length > textInputLayout.counterMaxLength -> {
+                                    textInputLayout.error = "Exceeding max length"
+                                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                                }
+                                typedText.isEmpty() -> {
+                                    textInputLayout.error = "Category name cannot be empty"
+                                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                                }
+                                else -> {
+                                    textInputLayout.error = null
+                                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                                }
+                            }
+                        }
+                    }
                 }
             }
         })
@@ -105,7 +173,6 @@ class CategoriesFragment : Fragment() {
 
         categoriesViewModel.groupedTransactions.observe(viewLifecycleOwner, {
             it?.let {
-                Log.d("groupedTransaction", "SOMETHING CHANGED")
                 categoriesAdapter.submitList(it)
                 categoriesBinding.swipeRefresh.isRefreshing = false
             }

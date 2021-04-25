@@ -83,6 +83,9 @@ class TransactionsFragment : Fragment() {
             }
         }
 
+        categoriesViewModel.categories.observe(viewLifecycleOwner, {
+            it?.let {  }
+        })
 
 
         transactionsViewModel.deletingTransaction.observe(viewLifecycleOwner, {

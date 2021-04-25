@@ -8,3 +8,8 @@ import kotlinx.parcelize.Parcelize
 data class CategoriesResponse(
     val categories: List<Category>
 ) : Parcelable
+
+@Parcelize
+data class CategoryResponse(
+    val category: Category,
+) : Parcelable

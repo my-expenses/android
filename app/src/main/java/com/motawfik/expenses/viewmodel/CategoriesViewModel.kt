@@ -1,6 +1,7 @@
 package com.motawfik.expenses.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.*
 import com.motawfik.expenses.models.Category
 import com.motawfik.expenses.models.CategoryWithGroupedTransactions
@@ -45,6 +46,33 @@ class CategoriesViewModel(context: Context) : ViewModel() {
     val deleteStatus: LiveData<CATEGORIES_API_STATUS>
         get() = _deleteStatus
 
+    private val _categoryToEdit = MutableLiveData<Category?>()
+    val categoryToEdit: LiveData<Category?>
+        get() = _categoryToEdit
+
+    private val _updateStatus = MutableLiveData(CATEGORIES_API_STATUS.INITIAL)
+    val updateStatus: LiveData<CATEGORIES_API_STATUS>
+        get() = _updateStatus
+
+    fun setCategoryToEdit(category: Category) {
+        _categoryToEdit.value = category
+    }
+
+    fun resetCategoryToEdit() {
+        _categoryToEdit.value = null
+    }
+
+    fun updateCategory(typedTitle: String) {
+        _categoryToEdit.value?.let {
+            val copiedCategory = it.copy(title = typedTitle)
+            coroutineScope.launch {
+                withContext(Dispatchers.IO) {
+                    categoriesRepo.updateCategory(copiedCategory, _updateStatus)
+                }
+            }
+        }
+    }
+
 
     fun setCategoryToDelete(transactionID: Int) {
         _deletingCategory.value = true
@@ -65,6 +93,10 @@ class CategoriesViewModel(context: Context) : ViewModel() {
 
     fun resetAddedToDBStatus() {
         _addedToDBStatus.value = CATEGORIES_API_STATUS.INITIAL
+    }
+
+    fun resetUpdateStatus() {
+        _updateStatus.value = CATEGORIES_API_STATUS.INITIAL
     }
 
     fun resetDeleteStatus() {
