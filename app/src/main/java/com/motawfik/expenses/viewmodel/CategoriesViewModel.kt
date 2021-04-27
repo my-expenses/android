@@ -1,7 +1,6 @@
 package com.motawfik.expenses.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.*
 import com.motawfik.expenses.models.Category
 import com.motawfik.expenses.models.CategoryWithGroupedTransactions
@@ -20,6 +19,7 @@ class CategoriesViewModel(context: Context) : ViewModel() {
 
     // boolean to indicate if a deletion is in progress
     private val _deletingCategory = MutableLiveData(false)
+
     // integer to hold the ID of the category being deleted
     val deletingCategory: LiveData<Boolean>
         get() = _deletingCategory
@@ -54,6 +54,10 @@ class CategoriesViewModel(context: Context) : ViewModel() {
     val updateStatus: LiveData<CATEGORIES_API_STATUS>
         get() = _updateStatus
 
+    private val _showNewCategory = MutableLiveData(false)
+    val showNewCategory: LiveData<Boolean>
+        get() = _showNewCategory
+
     fun setCategoryToEdit(category: Category) {
         _categoryToEdit.value = category
     }
@@ -67,10 +71,26 @@ class CategoriesViewModel(context: Context) : ViewModel() {
             val copiedCategory = it.copy(title = typedTitle)
             coroutineScope.launch {
                 withContext(Dispatchers.IO) {
-                    categoriesRepo.updateCategory(copiedCategory, _updateStatus)
+                    categoriesRepo.saveCategory(copiedCategory, _updateStatus, false)
                 }
             }
         }
+    }
+
+    fun createCategory(typedTitle: String) {
+        coroutineScope.launch {
+            withContext(Dispatchers.IO) {
+                categoriesRepo.saveCategory(Category(-1, -1, typedTitle), _updateStatus, true)
+            }
+        }
+    }
+
+    fun showNewCategoryDialog() {
+        _showNewCategory.value = true
+    }
+
+    fun resetShowNewCategoryDialog() {
+        _showNewCategory.value = false
     }
 
 
@@ -111,5 +131,17 @@ class CategoriesViewModel(context: Context) : ViewModel() {
                 categoriesRepo.addCategoriesToDB(_addedToDBStatus, formattedDate)
             }
         }
+    }
+
+    fun validateCategoryName(categoryName: String, maxLength: Int): String? {
+        if (categoryName.length > maxLength)
+            return "Exceeding max length"
+        if (categoryName.isEmpty())
+            return "Category name cannot be empty"
+        _categories.value?.forEach {
+            if (it.title == categoryName)
+                return "Category names must be unique"
+        }
+        return null
     }
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.motawfik.expenses.models.Category
 import com.motawfik.expenses.models.CategoryWithGroupedTransactions
+import com.motawfik.expenses.models.GroupedTransaction
 import com.motawfik.expenses.network.CategoriesApi
 import com.motawfik.expenses.viewmodel.CATEGORIES_API_STATUS
 
@@ -44,11 +45,19 @@ class CategoriesRepo(val context: Context) {
         return groupedTransactionsDao.getAll()
     }
 
-    suspend fun updateCategory(category: Category, updateStatus: MutableLiveData<CATEGORIES_API_STATUS>) {
+    suspend fun saveCategory(
+        category: Category,
+        updateStatus: MutableLiveData<CATEGORIES_API_STATUS>,
+        isNew: Boolean
+    ) {
         updateStatus.postValue(CATEGORIES_API_STATUS.LOADING)
         try {
-            val response = CategoriesApi.retrofitService.updateCategory(category.ID, category).await()
+            val response =
+                if (isNew) CategoriesApi.retrofitService.createCategory(category).await()
+                else CategoriesApi.retrofitService.updateCategory(category.ID, category).await()
             categoriesDao.insertOrUpdate(response.category)
+            if (isNew)  // to show in the grouped categories list
+                groupedTransactionsDao.insert(GroupedTransaction(response.category.ID, 0))
             updateStatus.postValue(CATEGORIES_API_STATUS.DONE)
         } catch (t: Throwable) {
             t.printStackTrace()

@@ -42,6 +42,7 @@
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/ic_baseline_add_24"
+            android:onClick="@{() -> viewModel.showNewCategoryDialog()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:backgroundTint="@color/purple_200" />

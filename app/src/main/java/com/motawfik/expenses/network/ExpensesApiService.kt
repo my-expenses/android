@@ -107,6 +107,12 @@ interface CategoriesApiService {
         @Body category: Category
     ):
             Deferred<CategoryResponse>
+
+    @POST("/auth/categories")
+    fun createCategory(
+        @Body category: Category,
+    ):
+            Deferred<CategoryResponse>
 }
 
 object CategoriesApi {

@@ -105,48 +105,28 @@ class CategoriesFragment : Fragment() {
         categoriesViewModel.categoryToEdit.observe(viewLifecycleOwner, {
             it?.let {
                 if (it.ID != 0) {
-                    val textInputLayout = TextInputLayout(requireContext())
-                    textInputLayout.isCounterEnabled = true
-                    textInputLayout.counterMaxLength = 30
-
-                    val textInputEditText = TextInputEditText(requireContext())
-                    textInputEditText.setText(it.title)
-                    textInputLayout.isErrorEnabled = true
-                    textInputLayout.addView(textInputEditText)
-
-                    val dialog = MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Category Title")
-                        .setView(textInputLayout)
-                        .setPositiveButton("Confirm") { _, _ ->
-                            categoriesViewModel.updateCategory(textInputEditText.text.toString())
-                        }
-                        .setNegativeButton("Cancel") { _, _ ->
-                            categoriesViewModel.resetCategoryToEdit()
-                        }
-                        .setOnDismissListener {
-                            categoriesViewModel.resetCategoryToEdit()
-                        }
-                        .create()
+                    val dialog = showCategoryEditText(
+                        requireContext(),
+                        categoriesViewModel,
+                        it.title,
+                        false
+                    )
                     dialog.show()
+                }
+            }
+        })
 
-                    textInputLayout.editText?.doAfterTextChanged { text ->
-                        text?.let { typedText ->
-                            when {
-                                typedText.length > textInputLayout.counterMaxLength -> {
-                                    textInputLayout.error = "Exceeding max length"
-                                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-                                }
-                                typedText.isEmpty() -> {
-                                    textInputLayout.error = "Category name cannot be empty"
-                                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-                                }
-                                else -> {
-                                    textInputLayout.error = null
-                                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
-                                }
-                            }
-                        }
-                    }
+        categoriesViewModel.showNewCategory.observe(viewLifecycleOwner, {
+            it?.let{
+                if (it) {
+                    val dialog = showCategoryEditText(
+                        requireContext(),
+                        categoriesViewModel,
+                        "",
+                        true
+                    )
+                    dialog.show()
+                    categoriesViewModel.resetShowNewCategoryDialog()
                 }
             }
         })
