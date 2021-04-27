@@ -1,16 +1,13 @@
 package com.motawfik.expenses.ui
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.motawfik.expenses.R
@@ -20,20 +17,20 @@ import com.motawfik.expenses.utils.showSuccessSnackbar
 import com.motawfik.expenses.viewmodel.CategoriesViewModel
 import com.motawfik.expenses.viewmodel.TRANSACTIONS_API_STATUS
 import com.motawfik.expenses.viewmodel.TransactionsViewModel
+import org.koin.android.viewmodel.ext.android.sharedViewModel
 import java.util.*
 
 class TransactionDataFragment : Fragment() {
+    private val transactionsViewModel by sharedViewModel<TransactionsViewModel>()
+    private val categoriesViewModel by sharedViewModel<CategoriesViewModel>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val viewModel = ViewModelProvider(requireActivity()).get(TransactionsViewModel::class.java)
-        val categoriesViewModel = ViewModelProvider(requireActivity()).get(CategoriesViewModel::class.java)
-
         val transactionDataBinding = FragmentTransactionDataBinding.inflate(inflater)
 
-        transactionDataBinding.viewModel = viewModel
-        viewModel.transactionData.observe(viewLifecycleOwner, {
+        transactionDataBinding.viewModel = transactionsViewModel
+        transactionsViewModel.transactionData.observe(viewLifecycleOwner, {
             it?.let {
                 transactionDataBinding.transaction = it
             }
@@ -52,10 +49,10 @@ class TransactionDataFragment : Fragment() {
         val selectedTimeCalendar = Calendar.getInstance()
         transactionDataBinding.dateEditText.setOnClickListener {
             val calendar = Calendar.getInstance()
-            calendar.time = viewModel.transactionData.value?.date!!
+            calendar.time = transactionsViewModel.transactionData.value?.date!!
 
             val datePicker = MaterialDatePicker.Builder.datePicker()
-                    .setSelection(viewModel.transactionData.value?.date!!.time)
+                    .setSelection(transactionsViewModel.transactionData.value?.date!!.time)
                     .setTitleText("Select date")
                     .build()
             val timePicker = MaterialTimePicker.Builder()
@@ -72,22 +69,22 @@ class TransactionDataFragment : Fragment() {
             timePicker.addOnPositiveButtonClickListener {
                 selectedTimeCalendar.set(Calendar.HOUR, timePicker.hour)
                 selectedTimeCalendar.set(Calendar.MINUTE, timePicker.minute)
-                viewModel.transactionData.value?.date = selectedTimeCalendar.time
-                viewModel.initializeTransaction(viewModel.transactionData.value!!)
+                transactionsViewModel.transactionData.value?.date = selectedTimeCalendar.time
+                transactionsViewModel.initializeTransaction(transactionsViewModel.transactionData.value!!)
             }
             datePicker.show(childFragmentManager, "date_tag")
         }
 
 
-        viewModel.saveStatus.observe(viewLifecycleOwner, {
+        transactionsViewModel.saveStatus.observe(viewLifecycleOwner, {
             it?.let {
                 if (it == TRANSACTIONS_API_STATUS.DONE) {
                     showSuccessSnackbar(transactionDataBinding.root, "Transaction Saved Successfully")
                     findNavController().popBackStack()
-                    viewModel.resetSaveStatus()
+                    transactionsViewModel.resetSaveStatus()
                 } else if (it == TRANSACTIONS_API_STATUS.ERROR) {
-                    showErrorSnackbar(transactionDataBinding.root, viewModel.saveErrorMessage.value!!)
-                    viewModel.resetSaveStatus()
+                    showErrorSnackbar(transactionDataBinding.root, transactionsViewModel.saveErrorMessage.value!!)
+                    transactionsViewModel.resetSaveStatus()
                 }
             }
         })

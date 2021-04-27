@@ -1,14 +1,12 @@
 package com.motawfik.expenses.ui
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.ExperimentalPagingApi
@@ -16,36 +14,23 @@ import androidx.paging.LoadState
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.motawfik.expenses.R
-import com.motawfik.expenses.databinding.FragmentTransactionsBinding
-import com.motawfik.expenses.models.Transaction
 import com.motawfik.expenses.adapters.TransactionListener
 import com.motawfik.expenses.adapters.TransactionsAdapter
 import com.motawfik.expenses.adapters.TransactionsLoadStateAdapter
-import com.motawfik.expenses.viewmodel.CATEGORIES_API_STATUS
+import com.motawfik.expenses.databinding.FragmentTransactionsBinding
+import com.motawfik.expenses.models.Transaction
 import com.motawfik.expenses.viewmodel.CategoriesViewModel
 import com.motawfik.expenses.viewmodel.TransactionsViewModel
-import com.motawfik.expenses.viewmodelfactory.ViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.android.viewmodel.ext.android.sharedViewModel
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class TransactionsFragment : Fragment() {
-    private lateinit var transactionsViewModel: TransactionsViewModel
-    private lateinit var categoriesViewModel: CategoriesViewModel
+    private val transactionsViewModel by sharedViewModel<TransactionsViewModel>()
+    private val categoriesViewModel by viewModel<CategoriesViewModel>()
     private lateinit var transactionsBinding: FragmentTransactionsBinding
     private lateinit var transactionsPagingAdapter: TransactionsAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        // one viewModel for both the transactions and the details fragments
-        val app = requireNotNull(this.activity).application
-        val viewModelFactory = ViewModelFactory(app)
-        transactionsViewModel =
-            ViewModelProvider(requireActivity(), viewModelFactory).get(TransactionsViewModel::class.java)
-        categoriesViewModel =
-            ViewModelProvider(requireActivity(), viewModelFactory).get(CategoriesViewModel::class.java)
-        // get transactions in onCreate to avoid getting it each time fragment is populated
-        // get transactions once and avoid fetching again when back/save button is pressed from the details fragment
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

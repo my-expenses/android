@@ -9,9 +9,6 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.motawfik.expenses.databinding.ActivityMainBinding
-import com.motawfik.expenses.modules.appModules
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
 
 class MainActivity : AppCompatActivity() {
     private var appBarConfiguration: AppBarConfiguration? = null
@@ -38,11 +35,6 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController!!, appBarConfiguration!!)
         binding.navigationView.setupWithNavController(navController!!)
-
-        startKoin {
-            androidContext(this@MainActivity)
-            modules(appModules)
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

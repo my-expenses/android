@@ -1,17 +1,11 @@
 package com.motawfik.expenses.ui
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
-import androidx.core.widget.doAfterTextChanged
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.motawfik.expenses.adapters.CategoriesAdapter
 import com.motawfik.expenses.adapters.CategoryListener
 import com.motawfik.expenses.databinding.FragmentCategoriesBinding
@@ -20,30 +14,12 @@ import com.motawfik.expenses.utils.showSuccessSnackbar
 import com.motawfik.expenses.viewmodel.CATEGORIES_API_STATUS
 import com.motawfik.expenses.viewmodel.CategoriesViewModel
 import com.motawfik.expenses.viewmodel.TransactionsViewModel
-import com.motawfik.expenses.viewmodelfactory.ViewModelFactory
+import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class CategoriesFragment : Fragment() {
-    private lateinit var categoriesViewModel: CategoriesViewModel
-    private lateinit var transactionsViewModel: TransactionsViewModel
+    private val transactionsViewModel by sharedViewModel<TransactionsViewModel>()
+    private val categoriesViewModel by sharedViewModel<CategoriesViewModel>()
     private lateinit var categoriesAdapter: CategoriesAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        val app = requireNotNull(this.activity).application
-        val viewModelFactory = ViewModelFactory(app)
-        categoriesViewModel =
-            ViewModelProvider(
-                requireActivity(),
-                viewModelFactory
-            ).get(CategoriesViewModel::class.java)
-
-        transactionsViewModel =
-            ViewModelProvider(
-                requireActivity(),
-                viewModelFactory
-            ).get(TransactionsViewModel::class.java)
-
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
