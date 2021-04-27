@@ -46,8 +46,6 @@ fun showCategoryEditText(
         text?.let { typedText ->
             val error = categoriesViewModel.validateCategoryName(typedText.toString(), textInputLayout.counterMaxLength)
             textInputLayout.error = error
-            Log.d("ERROR_CAT_NAME", error.toString())
-            Log.d("ERROR_CAT_NAME", (error!=null).toString())
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = error == null
         }
     }

@@ -18,19 +18,13 @@ data class GroupedTransaction(
     val total: Int,
 ): Parcelable
 
-class GroupedTransactionJSON(
-    val categoryID: Int?,
-    val total: Int,
-)
-
 @Parcelize
 data class GroupedTransactionsResponse(
     val groupedTransactions: List<GroupedTransaction>,
 ): Parcelable
 
 class GroupedTransactionAdapter {
-    @FromJson fun fromJson(groupedTransaction: GroupedTransactionJSON): GroupedTransaction {
-        Log.d("JSON_CONV", groupedTransaction.toString())
+    @FromJson fun fromJson(groupedTransaction: GroupedTransaction): GroupedTransaction {
         if (groupedTransaction.categoryID == null)
             return GroupedTransaction(0, groupedTransaction.total)
         return GroupedTransaction(groupedTransaction.categoryID, groupedTransaction.total)

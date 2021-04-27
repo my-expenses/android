@@ -65,7 +65,6 @@ class TransactionsRemoteMediator(
                 // Insert new users into database, which invalidates the
                 // current PagingData, allowing Paging to present the updates
                 // in the DB.
-                Log.d("TRANSACTIONS", response.toString())
                 database.transactionDao().insertAll(response.transactions)
             }
 

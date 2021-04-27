@@ -63,7 +63,6 @@ fun TextView.bindDate(date: Date) {
 
 @BindingAdapter("date")
 fun MaterialToolbar.bindDate(date: Date) {
-    Log.d("DATE_CHANGED", "TRUE")
     val parser = SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy", Locale.US)
     val formatter = SimpleDateFormat("MMMM yyyy", Locale.US)
     title = formatter.format(parser.parse(date.toString())!!)
