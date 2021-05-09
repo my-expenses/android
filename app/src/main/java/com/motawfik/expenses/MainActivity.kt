@@ -9,18 +9,20 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.motawfik.expenses.databinding.ActivityMainBinding
+import com.motawfik.expenses.repos.TokenRepository
+import org.koin.java.KoinJavaComponent
 
 class MainActivity : AppCompatActivity() {
     private var appBarConfiguration: AppBarConfiguration? = null
     private var navController: NavController? = null
+    private val tokenRepository by KoinJavaComponent.inject(TokenRepository::class.java)
 
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_Expenses)
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
 
         setSupportActionBar(binding.topAppBar) //set the toolbar
 
@@ -35,6 +37,16 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController!!, appBarConfiguration!!)
         binding.navigationView.setupWithNavController(navController!!)
+
+        navController!!.addOnDestinationChangedListener { controller, destination, arguments ->
+            if (destination.id == R.id.usersLoginFragment) {
+                tokenRepository.setAccessTokenValue("")
+                tokenRepository.setRefreshTokenValue("")
+                binding.topAppBar.navigationIcon = null
+            }
+        }
+
+        setContentView(binding.root)
     }
 
     override fun onSupportNavigateUp(): Boolean {

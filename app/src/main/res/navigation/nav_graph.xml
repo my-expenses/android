@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/transactionsFragment">
+    app:startDestination="@id/splashFragment">
     <fragment
         android:id="@+id/usersLoginFragment"
         android:name="com.motawfik.expenses.ui.UsersLoginFragment"
@@ -33,5 +33,21 @@
         android:id="@+id/categoriesFragment"
         android:name="com.motawfik.expenses.ui.CategoriesFragment"
         android:label="Categories" />
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.motawfik.expenses.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_usersLoginFragment"
+            app:destination="@id/usersLoginFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_transactionsFragment"
+            app:destination="@id/transactionsFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 </navigation>

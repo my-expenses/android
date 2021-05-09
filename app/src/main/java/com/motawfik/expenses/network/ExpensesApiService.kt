@@ -32,7 +32,10 @@ private val httpClient = OkHttpClient.Builder().addInterceptor {
         .addHeader("Authorization", "Bearer $tokenToUse").build()
     return@addInterceptor it.proceed(request)
 }.authenticator { route, response ->
-    if (response.request().url().uri().path == "/users/refresh-token") {
+    val path = response.request().url().uri().path
+    if(path == "/users/login")
+        return@authenticator null
+    if (path == "/users/refresh-token") {
         tokenRepository.setAccessTokenValue("")
         tokenRepository.setRefreshTokenValue("")
         return@authenticator null
@@ -69,6 +72,10 @@ interface UsersApiService {
 
     @POST("/users/refresh-token")
     fun refreshToken(): Call<Map<String, String>>
+
+    // function to determine if user is logged in or not
+    @GET("/users/status")
+    fun getUserStatus() : Deferred<String>
 }
 
 
