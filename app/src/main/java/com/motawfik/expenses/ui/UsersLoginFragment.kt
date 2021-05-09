@@ -1,13 +1,11 @@
 package com.motawfik.expenses.ui
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import com.motawfik.expenses.databinding.UsersLoginFragmentBinding
 import com.motawfik.expenses.repos.TokenRepository
 import com.motawfik.expenses.utils.showErrorSnackbar
@@ -50,11 +48,18 @@ class UsersLoginFragment : Fragment() {
             }
         })
 
-        loginViewModel.token.observe(viewLifecycleOwner, {
+        loginViewModel.accessToken.observe(viewLifecycleOwner, {
             if (it.isNotEmpty()) {
                 // saving token to sharedPreferences
-                tokenRepository.setTokenValue(it)
-                loginViewModel.resetToken()
+                tokenRepository.setAccessTokenValue(it)
+                loginViewModel.resetAccessToken()
+            }
+        })
+        loginViewModel.refreshToken.observe(viewLifecycleOwner, {
+            if (it.isNotEmpty()) {
+                // saving token to sharedPreferences
+                tokenRepository.setRefreshTokenValue(it)
+                loginViewModel.resetRefreshToken()
             }
         })
 

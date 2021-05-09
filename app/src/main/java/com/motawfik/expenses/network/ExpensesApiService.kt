@@ -1,6 +1,5 @@
 package com.motawfik.expenses.network
 
-import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.motawfik.expenses.BuildConfig
 import com.motawfik.expenses.models.*
@@ -11,9 +10,9 @@ import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
 import org.koin.java.KoinJavaComponent.inject
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
 import java.util.*
@@ -22,10 +21,30 @@ import java.util.*
 private val tokenRepository by inject(TokenRepository::class.java)
 
 private val httpClient = OkHttpClient.Builder().addInterceptor {
+    val tokenToUse =
+        if (it.request().url().uri().path == "/users/refresh-token")
+            tokenRepository.getRefreshTokenValue()
+        else
+            tokenRepository.getAccessTokenValue()
+
     val request = it.request().newBuilder()
         // add token to authorization header
-        .addHeader("Authorization", "Bearer ${tokenRepository.getTokenValue()}").build()
+        .addHeader("Authorization", "Bearer $tokenToUse").build()
     return@addInterceptor it.proceed(request)
+}.authenticator { route, response ->
+    if (response.request().url().uri().path == "/users/refresh-token") {
+        tokenRepository.setAccessTokenValue("")
+        tokenRepository.setRefreshTokenValue("")
+        return@authenticator null
+    }
+
+    val tokensResponse = UsersApi.retrofitService.refreshToken().execute()
+    val tokens = tokensResponse.body()
+    tokens?.get("accessToken")?.let { tokenRepository.setAccessTokenValue(it) }
+    tokens?.get("refreshToken")?.let { tokenRepository.setRefreshTokenValue(it) }
+    return@authenticator response.request().newBuilder()
+        .header("Authorization", "Bearer ${tokenRepository.getAccessTokenValue()}").build()
+
 }
 
 private val moshi = Moshi.Builder()
@@ -47,6 +66,9 @@ interface UsersApiService {
     @POST("users/login")
     fun login(@Field("email") email: String, @Field("password") password: String):
             Deferred<Map<String, String>>
+
+    @POST("/users/refresh-token")
+    fun refreshToken(): Call<Map<String, String>>
 }
 
 

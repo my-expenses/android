@@ -3,7 +3,8 @@ package com.motawfik.expenses.repos
 import android.content.Context
 import android.content.SharedPreferences
 
-private const val TOKEN_VALUE = "TOKEN_VALUE"
+private const val ACCESS_TOKEN_VALUE = "ACCESS_TOKEN_VALUE"
+private const val REFRESH_TOKEN_VALUE = "REFRESH_TOKEN_VALUE"
 
 class TokenRepository(context: Context) {
     private val pref: SharedPreferences =
@@ -18,9 +19,15 @@ class TokenRepository(context: Context) {
 
     private fun String.getString() = pref.getString(this, "")!!
 
-    fun setTokenValue(token: String) {
-        TOKEN_VALUE.put(token)
+    fun setAccessTokenValue(token: String) {
+        ACCESS_TOKEN_VALUE.put(token)
     }
 
-    fun getTokenValue() = TOKEN_VALUE.getString()
+    fun getAccessTokenValue() = ACCESS_TOKEN_VALUE.getString()
+
+    fun setRefreshTokenValue(token: String) {
+        REFRESH_TOKEN_VALUE.put(token)
+    }
+
+    fun getRefreshTokenValue() = REFRESH_TOKEN_VALUE.getString()
 }

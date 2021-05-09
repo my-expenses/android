@@ -2,6 +2,7 @@ package com.motawfik.expenses.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.motawfik.expenses.network.UsersApi
 import kotlinx.coroutines.CoroutineScope
@@ -26,16 +27,23 @@ class UsersLoginViewModel : ViewModel() {
     val loading: Boolean // to disable sign-in button when loading
         get() = _loginStatus.value == LOGIN_STATUS.LOADING
 
-    private val _token = MutableLiveData("")
-    val token: LiveData<String>
-        get() = _token
+    private val _accessToken = MutableLiveData("")
+    val accessToken: LiveData<String>
+        get() = _accessToken
+
+    private val _refreshToken = MutableLiveData("")
+    val refreshToken: LiveData<String>
+        get() = _refreshToken
 
     fun resetLoginStatus() {
         _loginStatus.value = LOGIN_STATUS.INITIAL
     }
 
-    fun resetToken() {
-        _token.value = ""
+    fun resetAccessToken() {
+        _accessToken.value = ""
+    }
+    fun resetRefreshToken() {
+        _refreshToken.value = ""
     }
 
     fun login() {
@@ -44,8 +52,9 @@ class UsersLoginViewModel : ViewModel() {
             try {
                 _loginStatus.value = LOGIN_STATUS.LOADING
                 val response = loginDeferred.await()
+                _accessToken.value = response["accessToken"]
+                _refreshToken.value = response["refreshToken"]
                 _loginStatus.value = LOGIN_STATUS.SUCCESS
-                _token.value = response["token"]
             } catch (t: Throwable) {
                 when (t) {
                     is HttpException -> {
