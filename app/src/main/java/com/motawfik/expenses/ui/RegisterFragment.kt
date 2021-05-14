@@ -1,33 +1,35 @@
 package com.motawfik.expenses.ui
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.motawfik.expenses.R
+import androidx.navigation.fragment.findNavController
+import com.motawfik.expenses.databinding.RegisterFragmentBinding
+
 import com.motawfik.expenses.viewmodel.RegisterViewModel
 
 class RegisterFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = RegisterFragment()
-    }
-
-    private lateinit var viewModel: RegisterViewModel
+    private val viewModel = RegisterViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.register_fragment, container, false)
-    }
+    ): View {
+        val registerBinding = RegisterFragmentBinding.inflate(inflater)
+        registerBinding.viewModel = viewModel
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
-        // TODO: Use the ViewModel
+        viewModel.backToLogin.observe(viewLifecycleOwner, {
+            it?.let {
+                if (it) {
+                    findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToUsersLoginFragment())
+                    viewModel.resetNavigateToLogin()
+                }
+            }
+        })
+
+        return registerBinding.root
     }
 
 }

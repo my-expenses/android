@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data class="RegisterViewModel">
+    <data class="RegisterFragmentBinding">
         <variable
             name="viewModel"
             type="com.motawfik.expenses.viewmodel.RegisterViewModel"/>
@@ -147,6 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="44dp"
                 android:text="@string/sign_in"
+                android:onClick="@{()->viewModel.navigateToLogin()}"
                 app:backgroundTint="@android:color/holo_green_dark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.501"

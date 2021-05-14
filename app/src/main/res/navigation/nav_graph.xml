@@ -55,6 +55,12 @@
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.motawfik.expenses.ui.RegisterFragment"
-        android:label="Register" />
+        android:label="Register" >
+        <action
+            android:id="@+id/action_registerFragment_to_usersLoginFragment"
+            app:destination="@id/usersLoginFragment"
+            app:popUpTo="@id/usersLoginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 </navigation>
