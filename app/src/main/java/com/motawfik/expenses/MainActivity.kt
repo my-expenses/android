@@ -2,6 +2,7 @@ package com.motawfik.expenses
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -39,10 +40,13 @@ class MainActivity : AppCompatActivity() {
         binding.navigationView.setupWithNavController(navController!!)
 
         navController!!.addOnDestinationChangedListener { controller, destination, arguments ->
-            if (destination.id == R.id.usersLoginFragment) {
+            if (destination.id == R.id.usersLoginFragment || destination.id == R.id.registerFragment) {
                 tokenRepository.setAccessTokenValue("")
                 tokenRepository.setRefreshTokenValue("")
                 binding.topAppBar.navigationIcon = null
+                binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            } else {
+                binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             }
         }
 

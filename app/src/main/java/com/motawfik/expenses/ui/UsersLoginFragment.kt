@@ -62,6 +62,14 @@ class UsersLoginFragment : Fragment() {
                 loginViewModel.resetRefreshToken()
             }
         })
+        loginViewModel.navigateToRegister.observe(viewLifecycleOwner, {
+            it?.let {
+                if(it) {
+                    findNavController().navigate(UsersLoginFragmentDirections.actionUsersLoginFragmentToRegisterFragment())
+                    loginViewModel.resetRegisterClicked()
+                }
+            }
+        })
 
         return loginBinding.root
     }

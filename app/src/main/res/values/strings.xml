@@ -29,4 +29,11 @@
     <string name="amount_gained">Amount gained from this category</string>
     <string name="amount_spent">Amount spent from this category</string>
     <string name="zero_difference">No expenses/income from this category</string>
+    <string name="register_txt">New User</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="register_text">Register</string>
+    <string name="connected">Already connected? Sign in now</string>
+    <string name="sign_in">Sign In</string>
+    <string name="confirm_password_hint">Confirm Password</string>
 </resources>

@@ -35,6 +35,10 @@ class UsersLoginViewModel : ViewModel() {
     val refreshToken: LiveData<String>
         get() = _refreshToken
 
+    private val _navigateToRegister = MutableLiveData(false)
+    val navigateToRegister: LiveData<Boolean>
+        get() = _navigateToRegister
+
     fun resetLoginStatus() {
         _loginStatus.value = LOGIN_STATUS.INITIAL
     }
@@ -42,8 +46,17 @@ class UsersLoginViewModel : ViewModel() {
     fun resetAccessToken() {
         _accessToken.value = ""
     }
+
     fun resetRefreshToken() {
         _refreshToken.value = ""
+    }
+
+    fun toRegisterClicked() {
+        _navigateToRegister.value = true
+    }
+
+    fun resetRegisterClicked() {
+        _navigateToRegister.value = false
     }
 
     fun login() {
