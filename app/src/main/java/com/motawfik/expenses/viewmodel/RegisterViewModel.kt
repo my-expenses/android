@@ -9,6 +9,12 @@ class RegisterViewModel : ViewModel() {
     val backToLogin: LiveData<Boolean>
         get() = _backToLogin
 
+    val firstName = MutableLiveData("")
+    val lastName = MutableLiveData("")
+    val email = MutableLiveData("")
+    val password = MutableLiveData("")
+    val confirmPassword = MutableLiveData("")
+
     fun navigateToLogin() {
         _backToLogin.value = true
     }

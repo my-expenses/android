@@ -18,6 +18,7 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val registerBinding = RegisterFragmentBinding.inflate(inflater)
+        registerBinding.lifecycleOwner = this
         registerBinding.viewModel = viewModel
 
         viewModel.backToLogin.observe(viewLifecycleOwner, {
@@ -28,6 +29,8 @@ class RegisterFragment : Fragment() {
                 }
             }
         })
+
+
 
         return registerBinding.root
     }
