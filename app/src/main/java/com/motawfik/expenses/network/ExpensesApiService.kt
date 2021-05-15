@@ -76,6 +76,15 @@ interface UsersApiService {
     // function to determine if user is logged in or not
     @GET("/users/status")
     fun getUserStatus() : Deferred<String>
+
+    @FormUrlEncoded
+    @POST("/users/register")
+    fun registerUser(
+        @Field("fullName") fullName: String,
+        @Field("email") email: String,
+        @Field("password") password: String,
+        @Field("confirmPassword") confirmPassword: String,
+    ) : Deferred<Map<String, String>>
 }
 
 
