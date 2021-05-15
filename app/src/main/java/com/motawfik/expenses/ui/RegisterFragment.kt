@@ -11,7 +11,7 @@ import com.motawfik.expenses.utils.showErrorSnackbar
 import com.motawfik.expenses.utils.showSuccessSnackbar
 
 import com.motawfik.expenses.viewmodel.RegisterViewModel
-import com.motawfik.expenses.viewmodel.RegistrationStatus
+import com.motawfik.expenses.viewmodel.REGISTRATION_STATUS
 
 class RegisterFragment : Fragment() {
     private val viewModel = RegisterViewModel()
@@ -42,7 +42,7 @@ class RegisterFragment : Fragment() {
 
         viewModel.status.observe(viewLifecycleOwner, {
             it?.let {
-                if(it == RegistrationStatus.DONE) {
+                if(it == REGISTRATION_STATUS.DONE) {
                     showSuccessSnackbar(registerBinding.root, "User created successfully")
                     findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToUsersLoginFragment())
                     viewModel.resetRegisterStatus()

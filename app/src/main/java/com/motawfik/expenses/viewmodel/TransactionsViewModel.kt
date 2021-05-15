@@ -1,10 +1,7 @@
 package com.motawfik.expenses.viewmodel
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -40,6 +37,10 @@ class TransactionsViewModel(context: Context) : ViewModel() {
     private val _saveStatus = MutableLiveData(TRANSACTIONS_API_STATUS.INITIAL)
     val saveStatus: LiveData<TRANSACTIONS_API_STATUS>
         get() = _saveStatus
+    val isLoading = Transformations.map(_saveStatus) {
+        it == TRANSACTIONS_API_STATUS.LOADING
+    }
+
     // transaction saving error message (create/edit)
     private val _saveErrorMessage = MutableLiveData("")
     val saveErrorMessage: LiveData<String>

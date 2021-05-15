@@ -2,6 +2,7 @@ package com.motawfik.expenses.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
 import com.motawfik.expenses.network.UsersApi
@@ -11,7 +12,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-enum class RegistrationStatus {INITIAL, LOADING, ERROR, DONE}
+enum class REGISTRATION_STATUS {INITIAL, LOADING, ERROR, DONE}
 
 class RegisterViewModel : ViewModel() {
     private val viewModelJob = Job()
@@ -27,9 +28,13 @@ class RegisterViewModel : ViewModel() {
     val password = MutableLiveData("")
     val confirmPassword = MutableLiveData("")
 
-    private val _status = MutableLiveData(RegistrationStatus.INITIAL)
-    val status: LiveData<RegistrationStatus>
+    private val _status = MutableLiveData(REGISTRATION_STATUS.INITIAL)
+    val status: LiveData<REGISTRATION_STATUS>
         get() = _status
+    val isLoading = Transformations.map(_status) {
+        it == REGISTRATION_STATUS.LOADING
+    }
+
     private val _errorMessage = MutableLiveData<String?>(null)
     val errorMessage: LiveData<String?>
         get() = _errorMessage
@@ -43,7 +48,7 @@ class RegisterViewModel : ViewModel() {
     }
 
     fun resetRegisterStatus() {
-        _status.value = RegistrationStatus.INITIAL
+        _status.value = REGISTRATION_STATUS.INITIAL
         _errorMessage.value = null
     }
 
@@ -54,9 +59,9 @@ class RegisterViewModel : ViewModel() {
             email.value!!, password.value!!, confirmPassword.value!!
         )
             try {
-                _status.value = RegistrationStatus.LOADING
-                val response = registration.await()
-                _status.value = RegistrationStatus.DONE
+                _status.value = REGISTRATION_STATUS.LOADING
+                registration.await()
+                _status.value = REGISTRATION_STATUS.DONE
             } catch (t: Throwable) {
                 t.printStackTrace()
                 when (t) {

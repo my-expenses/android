@@ -23,6 +23,8 @@ class UsersLoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val loginBinding = UsersLoginFragmentBinding.inflate(inflater)
+        loginBinding.lifecycleOwner = this
+
         loginBinding.viewModel = loginViewModel
 
         // observing login status for changes

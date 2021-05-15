@@ -70,9 +70,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="48dp"
-                android:enabled="@{!viewModel.loading}"
                 android:onClick="@{() -> viewModel.login()}"
                 android:text="@string/sign_in_txt"
+                app:nonSpinnerStatus="@{viewModel.isLoading}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/passwordEditText" />
@@ -82,6 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/not_connected"
+                app:nonSpinnerStatus="@{viewModel.isLoading}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -95,13 +96,22 @@
                 android:layout_marginTop="44dp"
                 android:text="@string/signup_text"
                 android:onClick="@{() -> viewModel.toRegisterClicked()}"
+                app:nonSpinnerStatus="@{viewModel.isLoading}"
                 app:backgroundTint="@android:color/holo_green_dark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.501"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-
+            <ProgressBar
+                android:id="@+id/progressBar2"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/passwordEditText"
+                app:spinnerStatus="@{viewModel.isLoading}" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

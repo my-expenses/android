@@ -24,8 +24,9 @@ class UsersLoginViewModel : ViewModel() {
     private var _loginStatus = MutableLiveData(LOGIN_STATUS.INITIAL)
     val loginStatus: LiveData<LOGIN_STATUS>
         get() = _loginStatus
-    val loading: Boolean // to disable sign-in button when loading
-        get() = _loginStatus.value == LOGIN_STATUS.LOADING
+    val isLoading = Transformations.map(_loginStatus) {
+        it == LOGIN_STATUS.LOADING
+    }
 
     private val _accessToken = MutableLiveData("")
     val accessToken: LiveData<String>

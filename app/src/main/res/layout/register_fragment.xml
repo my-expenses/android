@@ -140,6 +140,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/password_confirmation"
+                app:nonSpinnerStatus="@{viewModel.isLoading}"
                 app:userFirstName="@{viewModel.firstName}"
                 app:userLastName="@{viewModel.lastName}"
                 app:userEmail="@{viewModel.email}"
@@ -151,6 +152,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/connected"
+                app:nonSpinnerStatus="@{viewModel.isLoading}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -164,11 +166,23 @@
                 android:layout_marginTop="44dp"
                 android:text="@string/sign_in"
                 android:onClick="@{()->viewModel.navigateToLogin()}"
+                app:nonSpinnerStatus="@{viewModel.isLoading}"
                 app:backgroundTint="@android:color/holo_green_dark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.501"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyle"
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/registerBtn"
+                app:spinnerStatus="@{viewModel.isLoading}"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
