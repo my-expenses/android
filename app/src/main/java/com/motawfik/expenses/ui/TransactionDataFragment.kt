@@ -1,9 +1,11 @@
 package com.motawfik.expenses.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
@@ -37,14 +39,21 @@ class TransactionDataFragment : Fragment() {
         })
 
         val chipGroup = transactionDataBinding.chipGroup
-        categoriesViewModel.categories.value?.forEach {
-            val chip = layoutInflater.inflate(R.layout.single_chip_layout,
-                chipGroup, false) as Chip
-            chip.id = it.ID
-            chip.text = it.title
-            chip.isCheckable = true
-            chipGroup.addView(chip)
-        }
+        categoriesViewModel.categories.observe(viewLifecycleOwner, {
+            it?.let {
+                chipGroup.removeAllViews()
+                it.forEach { category ->
+                    val chip = layoutInflater.inflate(R.layout.single_chip_layout,
+                        chipGroup, false) as Chip
+                    chip.id = category.ID
+                    chip.text = category.title
+                    chip.isCheckable = true
+                    if (category.ID == transactionsViewModel.transactionData.value?.categoryID)
+                        chip.isChecked = true
+                    chipGroup.addView(chip)
+                }
+            }
+        })
 
         val selectedTimeCalendar = Calendar.getInstance()
         transactionDataBinding.dateEditText.setOnClickListener {
